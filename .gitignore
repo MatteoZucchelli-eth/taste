@@ -1,0 +1,17 @@
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Datasets (download per CONTEXT.md, never commit)
+data/
+
+# Model outputs / caches
+embeddings/
+checkpoints/
+runs/
+*.npy
+*.pt
+
+# Paper PDFs (fetch with papers/download.sh)
+*.pdf
