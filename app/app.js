@@ -315,9 +315,9 @@ function topBy(fn, n, filter) {
   idx.sort((a, b) => fn(b) - fn(a));
   return oneEach(idx, n);
 }
-function axisExamples(t, n, safe) {
+function axisExamples(t, n) {
   const sign = t.dev > 0 ? 1 : -1;
-  const idx = S.pool.filter((i) => !safe || !M.nsfw[i]).sort((a, b) => sign * (U[b * K + t.k] - U[a * K + t.k]));
+  const idx = S.pool.slice().sort((a, b) => sign * (U[b * K + t.k] - U[a * K + t.k]));
   return oneEach(idx.slice(0, 300).sort((a, b) => S.sUser[b] - S.sUser[a]), n);
 }
 function tasteMatch(z1, z2) { // correlation of the personal part of the scores over a fixed image sample
@@ -348,7 +348,7 @@ function showResults() {
     d.innerHTML = `<div class="axis-name"><span></span><span></span></div><div class="strip"></div>`;
     d.querySelector(".axis-name span").textContent = t.name;
     d.querySelector(".axis-name span:last-child").textContent = `over ${t.vs.toLowerCase()}`;
-    for (const i of axisExamples(t, 4, false)) d.querySelector(".strip").append(img(i));
+    for (const i of axisExamples(t, 4)) d.querySelector(".strip").append(img(i));
     box.append(d);
   }
   S.picks = topBy((i) => S.sUser[i], 6, (i) => !S.used.has(i));
@@ -421,9 +421,9 @@ async function makeCard() {
   g.fillText("MY TASTE", 80, y + 40);
   g.fillStyle = "#ededeb"; g.font = `700 54px ${font}`;
   y = wrap(g, `${S.traits[0].name} × ${S.traits[1].name}`, 80, y + 108, W - 160, 64);
-  // three artworks the model picked for me (never flagged images on a public card)
-  const safe = topBy((i) => S.sUser[i], 3, (i) => !M.nsfw[i] && !S.used.has(i));
-  const ims = await Promise.all(safe.map(loadForCanvas));
+  // three artworks the model picked for me
+  const picks = topBy((i) => S.sUser[i], 3, (i) => !S.used.has(i));
+  const ims = await Promise.all(picks.map(loadForCanvas));
   const gap = 24, tw = (W - 160 - 2 * gap) / 3, top = y + 30, th = Math.min(tw * 1.3, H - 200 - top);
   ims.forEach((im, j) => {
     const x = 80 + j * (tw + gap);
@@ -460,7 +460,7 @@ async function share() {
 // ------------------------------------------------------------------ session log (kept on the device for now)
 function saveSession() {
   const rec = {
-    v: 1, at: new Date().toISOString(), model: M.source, sfw: S.sfw, challengeFrom: S.challenge ? S.challenge.n : null,
+    v: 1, at: new Date().toISOString(), model: M.source, challengeFrom: S.challenge ? S.challenge.n : null,
     train: S.answers.map((a) => ({ top: M.image_id[a.top], bottom: M.image_id[a.bottom], y: a.y, ms: a.ms })),
     test: S.tests.map((t) => ({ top: M.image_id[t.top], bottom: M.image_id[t.bottom], choice: t.choice, pred: t.pred,
                                  conf: +t.conf.toFixed(3), cons: t.cons, ms: t.ms })),
@@ -478,10 +478,8 @@ function saveSession() {
 
 // ------------------------------------------------------------------ boot
 function newSession() {
-  const sfw = new URLSearchParams(location.search).get("sfw") === "1";
-  const pool = [];
-  for (let i = 0; i < N; i++) if (!sfw || !M.nsfw[i]) pool.push(i);
-  S = { phase: "train", answers: [], tests: [], used: new Set(), pool, sfw, ahead: null, locked: true,
+  const pool = [...Array(N).keys()];
+  S = { phase: "train", answers: [], tests: [], used: new Set(), pool, ahead: null, locked: true,
         challenge: readChallenge() };
 }
 async function boot() {

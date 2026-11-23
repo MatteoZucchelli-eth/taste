@@ -44,11 +44,6 @@ def main():
         with Image.open(a.data / "images" / p) as im:
             sizes.append(im.size)
 
-    # nudity flag from the generated captions: such images never go on the share card, and ?sfw=1 drops them
-    prompts = pd.read_csv(a.data / "image_attributes/image_prompts.csv").set_index("path")["prompt"]
-    pat = r"\b(?:nude|nudes|naked|erotic|nudity|breasts?|genital\w*|sexual\w*|intercourse|odalisque)\b"
-    nsfw = [int(bool(pd.Series([str(prompts.get(p, ""))]).str.contains(pat, case=False).iloc[0])) for p in P]
-
     U.astype("<f4").tofile(a.out / "U.bin")
     cons = U @ mu
     meta = dict(
@@ -56,7 +51,7 @@ def main():
         n=len(ids), k=int(U.shape[1]), tau=tau, mu=mu.tolist(), Sinv=np.linalg.inv(Sig).tolist(),
         Sig=Sig.tolist(), axis_mean=U.mean(0).tolist(), axis_sd=U.std(0).tolist(),
         cons_mean=float(cons.mean()), cons_sd=float(cons.std()),
-        image_id=[int(i) for i in ids], path=P, w=[s[0] for s in sizes], h=[s[1] for s in sizes], nsfw=nsfw,
+        image_id=[int(i) for i in ids], path=P, w=[s[0] for s in sizes], h=[s[1] for s in sizes],
     )
     (a.out / "meta.json").write_text(json.dumps(meta, separators=(",", ":")))
     print(f"{len(ids)} images, K+1={U.shape[1]}, tau={tau}, mu={np.round(mu, 3).tolist()}")

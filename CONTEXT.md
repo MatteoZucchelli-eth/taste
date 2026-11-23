@@ -300,7 +300,7 @@ link (`#c=` carries name, score and z → friend sees "taste match %" = correlat
 - Axis pole names (read from top/bottom images): 0 crowd-pleaser/against the grain, 1 vivid sensual painting/quiet minimalism,
   2 raw gestural/polished detail, 3 old-master portraits/the human body, 4 open landscapes/intimate figures, 5 baroque drama/clean
   colour fields, 6 busy geometry/near-empty canvases, 7 playful naive figures/explosive abstraction, 8 lush florals/stark B&W.
-- 873 images flagged as nudity from the captions: never on the share card; `?sfw=1` removes them from the pool.
+- No content filter: all images can appear in questions, picks and on the share card (user decision, 2026-11-23).
 - Checks: JS MAP fit = Python `fit_users` to 6e-7; simulated users from the population prior: infogain 0.857 / random 0.823 /
   consensus 0.745 agreement with the true preference; full flow tested in WebKit (iPhone 15 emulation), light/dark, landscape.
 - Run: `python3 app/serve.py` → open `http://<LAN IP>:8000` on the phone (same Wi-Fi). Re-export: `docker compose run --rm taste
