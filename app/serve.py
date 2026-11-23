@@ -45,10 +45,11 @@ def lan_ip():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8000)
+    ap.add_argument("--host", default="0.0.0.0", help="127.0.0.1 = reachable only through an SSH tunnel")
     a = ap.parse_args()
     assert IMAGES.is_dir(), f"missing {IMAGES}"
     assert (ROOT / "data/U.bin").exists(), "run: docker compose run --rm taste python src/app_export.py"
-    srv = http.server.ThreadingHTTPServer(("0.0.0.0", a.port), functools.partial(Handler, directory=str(ROOT)))
+    srv = http.server.ThreadingHTTPServer((a.host, a.port), functools.partial(Handler, directory=str(ROOT)))
     print(f"Taste app on http://{lan_ip()}:{a.port}  (local: http://localhost:{a.port})  Ctrl+C to stop")
     srv.serve_forever()
 

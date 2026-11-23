@@ -24,7 +24,7 @@ const AXES = [
   { hi: "Lush florals", lo: "Stark black & white" },
 ];
 
-let M, U, K, N, consSorted;
+let M, U, K, N;
 let S; // session state
 
 // ------------------------------------------------------------------ small linear algebra (n <= 10)
@@ -150,7 +150,6 @@ async function showPair(pr) {
   for (const s of slots) {
     s.classList.remove("picked", "model");
     s.querySelector(".tag").className = "tag";
-    s.querySelector(".score").className = "score";
   }
   $("verdict").textContent = "";
   $("verdict").className = "verdict";
@@ -240,7 +239,6 @@ function finishTraining() {
   S.z = f.z; S.b = f.b;
   S.sUser = new Float64Array(N);
   for (let i = 0; i < N; i++) S.sUser[i] = score(S.z, i);
-  S.userSorted = Float64Array.from(S.sUser).sort();
   S.phase = "test";
   S.tests = [];
   S.nextTest = makeTest();
@@ -263,25 +261,16 @@ async function testStep() {
   await showPair(t);
   if (S.tests.length < CFG.nTest) S.nextTest = makeTest();
 }
-function pct(v, sorted) {
-  let lo = 0, hi = sorted.length;
-  while (lo < hi) { const mid = (lo + hi) >> 1; if (sorted[mid] < v) lo = mid + 1; else hi = mid; }
-  return Math.round((100 * lo) / sorted.length);
-}
 function revealTest(k, dt) {
   const t = S.cur;
   t.choice = k; t.ms = Math.round(dt);
-  const ids = [t.top, t.bottom];
   slots[t.pred].classList.add("model");
-  ids.forEach((i, j) => {
+  [0, 1].forEach((j) => {
     const tag = slots[j].querySelector(".tag");
     const parts = [];
     if (j === k) parts.push("Your pick");
     if (j === t.pred) parts.push(`Model's guess · ${Math.round(100 * t.conf)}% sure`);
     if (parts.length) { tag.textContent = parts.join(" · "); tag.className = "tag on" + (j === t.pred ? " model" : ""); }
-    const sc = slots[j].querySelector(".score");
-    sc.textContent = `Model score for you ${pct(S.sUser[i], S.userSorted)} · crowd ${pct(score(M.mu, i), consSorted)}`;
-    sc.className = "score on";
   });
   const hit = k === t.pred;
   $("verdict").textContent = hit ? "✓ Called it" : "✗ Missed";
@@ -489,9 +478,6 @@ async function boot() {
   ]);
   M = meta; U = new Float32Array(buf); K = M.k; N = M.n;
   Object.assign(PRIOR, priorBlocks());
-  const cons = new Float64Array(N);
-  for (let i = 0; i < N; i++) cons[i] = score(M.mu, i);
-  consSorted = cons.sort();
   newSession();
   if (S.challenge) {
     $("challenge").textContent = `${S.challenge.n || "A friend"}'s taste model guessed ${S.challenge.s}/10. Can it read you?`;

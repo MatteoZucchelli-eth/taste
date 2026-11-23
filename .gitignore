@@ -21,3 +21,4 @@ runs/
 
 # Per-machine docker compose settings (UID/GID)
 .env
+app/serve.log

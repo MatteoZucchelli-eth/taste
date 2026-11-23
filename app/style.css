@@ -69,13 +69,13 @@ h2 { font-size: 1.05rem; margin: 22px 0 0; }
 .pair.shown .slot img { opacity: 1; }
 .slot.picked { outline-color: var(--fg); transform: scale(.985); }
 .slot.model { outline-color: var(--ring); }
-.tag, .score {
+.tag {
   position: absolute; left: 10px; font-size: .78rem; font-weight: 600; padding: 4px 9px; border-radius: 999px;
   background: rgba(0,0,0,.66); color: #fff; opacity: 0; transition: opacity .15s; pointer-events: none;
   font-variant-numeric: tabular-nums; max-width: calc(100% - 20px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.tag { top: 10px; } .score { bottom: 10px; }
-.tag.on, .score.on { opacity: 1; }
+.tag { top: 10px; }
+.tag.on { opacity: 1; }
 .tag.model { background: var(--ring); }
 
 .foot { min-height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
