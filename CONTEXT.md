@@ -264,7 +264,7 @@ Goal: a *very simple proof of concept* of whether RL against a personal critic p
 The actor is a pretrained text-to-image model, the reward is the user's critic, and **strong KL regularisation** keeps the actor near the base model.
 The literature is in `papers/INDEX.md` §6 (8 papers: Uehara tutorial, DDPO, DPOK, DRaFT, Diffusion-DPO, Flow-GRPO, Adjoint Matching, TDPO-R).
 How the decisions were made: the user answered 10 questions **without seeing recommendations** (to avoid bias), then compared them with Claude's
-recommendations and adopted SD 1.5 plus all of Claude's other recommendations. **Nothing in step 2 is implemented yet** except the data-collection session below.
+recommendations and adopted SD 1.5 plus all of Claude's other recommendations. Implementation status: see §6h.
 
 **Final decisions (user, 2026-11-23):**
 1. **Actor: Stable Diffusion 1.5** (UNet ~0.9B, 512 px). Weights: HF `stable-diffusion-v1-5/stable-diffusion-v1-5` (the original
@@ -323,6 +323,29 @@ Known risk: the critic was trained on LAPIS artworks; SD outputs are out of dist
 report test accuracy on the 20 pairs; (2) reward function on generated images + sanity check (critic top/bottom among ~200 base SD 1.5 samples, shown on a page);
 (3) best-of-N baseline; (4) DDPO/DPOK trainer with LoRA + KL, a short smoke run, measure throughput; (5) beta sweep + consensus actor; (6) automatic checks;
 (7) app eval mode + the user's blind test.
+
+**§6h Step 2 progress (2026-11-23/24).** Code: `src/rl_*.py`, outputs `outputs/rl/`, checkpoints `checkpoints/rl/` (gitignored).
+- Build steps 1–2 done and verified. `src/rl_setup.py`: the Phase C checkpoint stores only U, not the MLP, so the fold-0 shared model was
+  retrained (same data/seed) and affinely mapped onto the saved basis: R^2 = 1.000 on all 9 axes (→ `checkpoints/rl/trunk.pt`); torch-side CLIP
+  preprocessing of raw images matches the cached embeddings (consensus-score corr 0.998). z refitted in Python (matches app to 5e-6), tau=2.0
+  (validation choice for 100 pairs): **16/20 test picks (crowd model 9/20)**. SigLIP held-out critic (Phase B consensus head + per-user residual,
+  λ by CV): 16/20 test (its consensus head alone 12/20); corr with the CLIP reward on LAPIS 0.49. `src/rl_sanity.py`: 200 base SD samples sit
+  inside the LAPIS range on every axis; DDIM eta=1 step matches diffusers to 1e-6; 0.53 s/image (20 steps, CFG 5). 81% of reward variance is
+  between prompts; within-prompt CLIP-reward vs SigLIP-critic Spearman only 0.16 (risk). Critic within-prompt picks: bold B&W geometry,
+  colour fields, expressive marks; consensus picks: autumn forests, harbours.
+- Trainer `src/rl_train.py` (DDPO PPO-clip 1e-4 + DPOK per-step KL, LoRA r=4 on attention, lr 3e-4, 2 optimizer steps/epoch, 64 samples/epoch,
+  half of the 20 steps trained per sample, grad checkpointing; ~133 s/epoch). Bug found and fixed: bf16 log-probs depend on batch size, so
+  sampling and training must use the same micro-batch (else ~50% of samples are clipped spuriously).
+- **Run 1** (all 20 TRAIN prompts, β=0.01): flat held-out reward after 15 epochs (0.126 → 0.110) while path KL rose to ~480 nats; stopped.
+- **Diagnostic** `diag4_b0.01` (4 prompts: city street, vase of flowers, couple dancing, figure reading; 16 images/prompt/epoch; eval on the
+  same prompts with unseen seeds): reward 0.03 → 0.31 by epoch 12, SigLIP critic −0.21 → −0.15 by epoch 6 then flat (first hint of
+  overoptimization), prompt fit and diversity unchanged, KL ~440 nats. Visually: shift to black-and-white, starker, sketchier rendering
+  (matches the user's traits); flowers barely change. → the method learns when each prompt gets enough samples; run 1's signal was too thin.
+- Path KL is in nats summed over 16,384 latent dims and 20 steps, dominated by the low-noise steps: a barely visible change is already ~200 nats,
+  and at lr 3e-4 KL grows by gradient noise faster than β=0.01 restrains it.
+- **Next (proposed):** sweep on ~8 prompts with lower lr and stronger β (e.g. 0.1/0.03/0.01), choose β on the SigLIP critic (not the reward);
+  then consensus actor at that β, `src/rl_final.py` (base, best-of-16, actors on the 10 EVAL prompts), and the blind test
+  `app/eval.html?n=120&tag=me` (served by `app/serve.py`, analysed by `src/rl_human.py`).
 
 ## 7. Environment (GPU machine, set up 2026-11-22)
 

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#161616">
+<title>This or That · generated</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .prompt { text-align: center; color: var(--muted); font-size: .92rem; margin: 6px 0 0; min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main id="app">
+  <section id="intro" class="screen center">
+    <h1>Which do you prefer?</h1>
+    <p class="lead">Pairs of AI-generated images for the same prompt.</p>
+    <p class="hint">Tap the one you like more. Go with your gut. You won't see which model made which image.</p>
+    <button id="start" class="btn" disabled>Loading…</button>
+  </section>
+  <section id="play" class="screen" hidden>
+    <header class="bar"><span class="phase">Generated images</span><span id="count" class="count"></span></header>
+    <div class="progress"><div id="progress-fill"></div></div>
+    <p id="prompt" class="prompt"></p>
+    <div id="pair" class="pair">
+      <button class="slot" id="slot0" aria-label="Choose this image"><img alt=""></button>
+      <button class="slot" id="slot1" aria-label="Choose this image"><img alt=""></button>
+    </div>
+  </section>
+  <section id="done" class="screen center" hidden>
+    <h1>Thank you</h1>
+    <p id="saved" class="hint"></p>
+  </section>
+</main>
+<script src="eval.js"></script>
+</body>
+</html>

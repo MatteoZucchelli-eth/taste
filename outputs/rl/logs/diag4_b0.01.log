@@ -1,0 +1,28 @@
+ Container taste-taste-run-463d6c5fb4df Creating 
+ Container taste-taste-run-463d6c5fb4df Created 
+/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py:205: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/196 [00:00<?, ?it/s]Loading weights: 100%|██████████| 196/196 [00:00<00:00, 4642.47it/s]
+/workspace/src/rl_eval.py:69: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:208.)
+  e = dino[m]
+[    42s] LoRA rank 4: 0.80M trainable params
+[    96s] EVAL epoch=0.0000 r_user=0.0295 r_cons=0.7554 siglip_user=-0.2121 siglip_cons=0.9945 prompt_fit=0.1355 drift_sim=1.0000 diversity=0.4035 kl=0.0000
+[   142s] sigma_ref (within-prompt reward sd at epoch 1) = 0.2404
+[   230s] epoch=1 t=229.7 r_mean=0.01142 r_sd=0.4417 r_within_sd=0.2404 kl_train=41.67 clipfrac=0.2266 ratio_dev=0.0001459 gnorm=0.003951 t_sample=45.87 t_epoch=133.5
+[   363s] epoch=2 t=363.3 r_mean=0.07122 r_sd=0.4641 r_within_sd=0.2414 kl_train=189.6 clipfrac=0.1797 ratio_dev=0.0002692 gnorm=0.002968 t_sample=45.91 t_epoch=133.6
+[   497s] epoch=3 t=496.8 r_mean=0.08981 r_sd=0.541 r_within_sd=0.2715 kl_train=308.6 clipfrac=0.2078 ratio_dev=0.0003723 gnorm=0.005292 t_sample=45.88 t_epoch=133.5
+[   551s] EVAL epoch=3.0000 r_user=0.1256 r_cons=0.6676 siglip_user=-0.1744 siglip_cons=0.8816 prompt_fit=0.1361 drift_sim=0.8156 diversity=0.4119 kl=315.2216
+[   685s] epoch=4 t=684.6 r_mean=0.1274 r_sd=0.4764 r_within_sd=0.2565 kl_train=260.9 clipfrac=0.1953 ratio_dev=0.0001789 gnorm=0.003373 t_sample=45.9 t_epoch=133.5
+[   818s] epoch=5 t=818.1 r_mean=0.1286 r_sd=0.5447 r_within_sd=0.3138 kl_train=332.3 clipfrac=0.1766 ratio_dev=0.0001855 gnorm=0.004309 t_sample=45.87 t_epoch=133.5
+[   952s] epoch=6 t=951.6 r_mean=0.1666 r_sd=0.5781 r_within_sd=0.341 kl_train=408.2 clipfrac=0.2094 ratio_dev=0.0003915 gnorm=0.005063 t_sample=45.86 t_epoch=133.5
+[  1006s] EVAL epoch=6.0000 r_user=0.2122 r_cons=0.6797 siglip_user=-0.1534 siglip_cons=0.9162 prompt_fit=0.1367 drift_sim=0.7805 diversity=0.4293 kl=388.7988
+[  1139s] epoch=7 t=1139 r_mean=0.187 r_sd=0.5345 r_within_sd=0.2626 kl_train=320.9 clipfrac=0.2094 ratio_dev=0.0002466 gnorm=0.003705 t_sample=45.93 t_epoch=133.5
+[  1273s] epoch=8 t=1273 r_mean=0.1654 r_sd=0.5315 r_within_sd=0.2531 kl_train=626.4 clipfrac=0.1969 ratio_dev=0.000446 gnorm=0.004243 t_sample=45.87 t_epoch=133.5
+[  1406s] epoch=9 t=1406 r_mean=0.2656 r_sd=0.5582 r_within_sd=0.2698 kl_train=391.5 clipfrac=0.1828 ratio_dev=0.0002203 gnorm=0.00367 t_sample=45.87 t_epoch=133.5
+[  1461s] EVAL epoch=9.0000 r_user=0.2238 r_cons=0.7241 siglip_user=-0.1620 siglip_cons=0.9948 prompt_fit=0.1388 drift_sim=0.7480 diversity=0.4117 kl=412.2829
+[  1594s] epoch=10 t=1594 r_mean=0.2551 r_sd=0.544 r_within_sd=0.2329 kl_train=361.1 clipfrac=0.1813 ratio_dev=0.000342 gnorm=0.002157 t_sample=45.89 t_epoch=133.5
+[  1728s] epoch=11 t=1728 r_mean=0.2734 r_sd=0.5267 r_within_sd=0.2513 kl_train=566 clipfrac=0.1922 ratio_dev=0.0003487 gnorm=0.004214 t_sample=45.87 t_epoch=133.5
+[  1861s] epoch=12 t=1861 r_mean=0.2345 r_sd=0.5712 r_within_sd=0.2439 kl_train=528.4 clipfrac=0.1719 ratio_dev=0.0002302 gnorm=0.003465 t_sample=45.85 t_epoch=133.4
+[  1916s] EVAL epoch=12.0000 r_user=0.3100 r_cons=0.7345 siglip_user=-0.1625 siglip_cons=0.9874 prompt_fit=0.1387 drift_sim=0.7371 diversity=0.4205 kl=437.2798
+[  2049s] epoch=13 t=2049 r_mean=0.2811 r_sd=0.5446 r_within_sd=0.2577 kl_train=488.3 clipfrac=0.1797 ratio_dev=0.0003031 gnorm=0.003392 t_sample=45.91 t_epoch=133.5

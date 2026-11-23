@@ -1,0 +1,50 @@
+{
+ "ddim_maxabs_vs_diffusers": 9.5367431640625e-07,
+ "images": 200,
+ "sample_s_per_image": 0.5342383861541748,
+ "decode_s_per_image": 0.041314784288406375,
+ "lapis_r_user_mean_sd": [
+  0.053266256281338256,
+  0.6544717022367126
+ ],
+ "sd_r_user_mean_sd": [
+  0.06495919823646545,
+  0.4415738880634308
+ ],
+ "lapis_r_cons_mean_sd": [
+  -0.024483429471393797,
+  0.8775491666435181
+ ],
+ "sd_r_cons_mean_sd": [
+  0.5608428716659546,
+  0.5538391470909119
+ ],
+ "sd_r_user_lapis_percentile_median": 0.47677386334556004,
+ "axis_z_of_sd_mean_vs_lapis": [
+  0.69,
+  0.23,
+  -0.29,
+  -0.01,
+  0.12,
+  -0.13,
+  -0.5,
+  0.23,
+  0.3
+ ],
+ "axis_sd_ratio_sd_vs_lapis": [
+  0.69,
+  0.79,
+  0.65,
+  0.94,
+  1.02,
+  0.52,
+  0.87,
+  0.79,
+  0.92
+ ],
+ "corr_r_user_vs_siglip_user": 0.4770914272856822,
+ "corr_r_cons_vs_siglip_cons": 0.823868596714918,
+ "corr_r_user_vs_r_cons": -0.11642691067276684,
+ "within_prompt_corr_r_user_vs_siglip_user_median": 0.16363636363636364,
+ "frac_reward_var_between_prompts": 0.8118208526337354
+}

@@ -109,8 +109,9 @@ def monitor_acc(model, Et, d_mon, pos, ridx):
     return float(np.mean(accs))
 
 
-def train_shared(E, d_tr, pos, K, steps, seed, batch=16384, eval_every=500):
-    """Returns U (N x K+1, float64 tensor), Z (R x K+1), monitor history. 5% of images held out for early stopping."""
+def train_shared(E, d_tr, pos, K, steps, seed, batch=16384, eval_every=500, return_model=False):
+    """Returns U (N x K+1, float64 tensor), Z (R x K+1), monitor history. 5% of images held out for early stopping.
+    return_model=True also returns the trained module (its trunk scores new images)."""
     torch.manual_seed(seed)
     gen = torch.Generator(device=DEV).manual_seed(seed)
     rng = np.random.default_rng(seed)
@@ -145,6 +146,8 @@ def train_shared(E, d_tr, pos, K, steps, seed, batch=16384, eval_every=500):
     model.eval()
     with torch.no_grad():
         U = model.trunk(Et).double()
+    if return_model:
+        return U, model.Z.detach().double(), hist, best, model
     return U, model.Z.detach().double(), hist, best
 
 
