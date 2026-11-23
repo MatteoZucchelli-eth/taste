@@ -3,15 +3,18 @@
 __pycache__/
 *.pyc
 
-# Datasets (download per CONTEXT.md, never commit)
-data/
+# Datasets (download per CONTEXT.md, never commit) — top-level only, so app/data/ is tracked
+/data/
 
 # Model outputs / caches
 embeddings/
-checkpoints/
+checkpoints/*
+!checkpoints/phase_c/
 runs/
 *.npy
 *.pt
+# the Phase C shared model is small (4.3 MB) and the app's axis names depend on it: keep it in git
+!checkpoints/phase_c/*.pt
 
 # Paper PDFs (fetch with papers/download.sh)
 *.pdf
