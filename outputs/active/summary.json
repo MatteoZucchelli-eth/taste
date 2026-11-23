@@ -1,0 +1,45 @@
+{
+  "pairs_to_match_random_250": {
+    "B_control": {
+      "random": 250,
+      "uncertainty": null,
+      "infogain": null,
+      "random_acc_at_250": 0.7785730511080313
+    },
+    "B_selected": {
+      "random": 250,
+      "uncertainty": null,
+      "infogain": null,
+      "random_acc_at_250": 0.7489594191536288
+    },
+    "C_control": {
+      "random": 250,
+      "uncertainty": 250,
+      "infogain": 150,
+      "random_acc_at_250": 0.7923403839973128
+    },
+    "C_selected": {
+      "random": 250,
+      "uncertainty": null,
+      "infogain": 150,
+      "random_acc_at_250": 0.7557769511854782
+    }
+  },
+  "sched": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    35,
+    50,
+    75,
+    100,
+    150,
+    200,
+    250
+  ],
+  "seeds": 5,
+  "n_cand": 3000,
+  "runtime_s": 2471
+}

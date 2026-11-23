@@ -231,8 +231,31 @@ script `src/phase_c_lowrank.py --stage all` (~70 min on the 5070 Ti). Checkpoint
   15 context images, on its own AI-image dataset. LAPIS paper PIAA baselines report pooled SROCC (0.70 seen / 0.28 unseen users), not
   per-user accuracy. No SOTA claim possible without running a shared protocol.
 
-**Status / next step (2026-11-23):** Phase C step 2 done. Remaining decided steps: per-rater ceiling (step 3), active pair selection
-(step 4), LoRA-tuned shared encoder (step 5, needed to raise the full-data plateau). Optionally pick λ_w by inner CV per rater at large budgets.
+**§6e Encoder fine-tuning — tried and dropped (2026-11-23).** LoRA (rank 16, last 8 of 24 CLIP blocks, 2.1M params) inside the
+Phase C model. From scratch the head was undertrained; with linear-probe-then-fine-tune (head on frozen features first, then LoRA +
+head) held-out-image accuracy rose only +0.2 pts for 1–2 epochs (fold 0 0.7416→0.7435, fold 1 0.7341→0.7359, fold 2 +0.0) and then
+overfit; on the 18 raters (fold 0) LoRA tied frozen within ±1 pt. ~10k images is too little to improve CLIP for this. **User decision:
+stopped, code deleted; do not retry without much more data.** The frozen encoder is not the bottleneck.
+
+**§6f Active pair selection (2026-11-23)** — `src/active.py --seeds 5`; `outputs/active/{curve_C.csv,curve_B.csv,per_rater.csv,
+summary.json,active.png}` (~42 min). Simulated "this or that" sessions: 18 raters × 5 folds × 5 seeds, pool = the rater's training images
+(tied pairs not askable), same 5 random start pairs for every strategy, batches up to 250 pairs, refit after each batch, same test images
+as Phase B/C. Strategies: random, uncertainty (P≈0.5), infogain (greedy D-optimal on the Laplace posterior of the person's parameters:
+score p(1−p)·dᵀH⁻¹d). Phase C uses its fold checkpoints and val-chosen τ/λ_w; Phase B retrains its consensus per fold and picks λ by
+inner CV at 10/25/50/100/250 pairs.
+- **Phase C + infogain is best at every budget.** Gap≥10, median, controls: random/infogain 10 pairs 0.731/0.746, 25 0.755/0.769,
+  50 0.768/0.782, 100 0.781/0.791; selected 25 0.692/0.722, 50 0.711/0.735. Infogain beats random for 10/10 controls at 10–25 pairs and
+  8/8 selected at 15–35; reaches random's 250-pair accuracy at 150 pairs; never worse.
+- **Phase B gains little from infogain** (selected +1–2 pts at 10–35 pairs, controls ≈0) and loses at 250 pairs (−1.5 / −2.5): with
+  769 parameters a few chosen pairs cannot cover the space, and the actively chosen (non-representative) pairs seem to hurt Phase B's
+  λ cross-validation.
+- **Uncertainty sampling hurts both models** (asks near-ties).
+- Overall: Phase C + infogain at 25 pairs ≈ Phase B + random at ~150–200 pairs → **~7–8× fewer questions** than the Phase B start.
+- Also: `src/axes_page.py` → `outputs/phase_c/axes.html`, top/bottom LAPIS images per shared axis (fold 0), published privately at
+  https://claude.ai/artifact/WEVBtxXDxtwHtZWR25qw58. Each axis is one scalar per image (MLP 768→512→9); a person = 9 weights.
+
+**Status / next step (2026-11-23):** Remaining decided step: per-rater ceiling (how much accuracy is left on LAPIS). Commit 1ca9cc8 and
+later commits are not pushed: no GitHub credentials on this machine (SSH key not on the account, no gh CLI).
 
 ## 7. Environment (GPU machine, set up 2026-11-22)
 
