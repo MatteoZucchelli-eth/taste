@@ -1,0 +1,19 @@
+participant_id,group,heuristic,n,n_unique,acc_cons,gain,taste_z,vaiak,imgs_known,taste_likes,taste_dislikes,min_cos_to_others
+201,selected,False,1891,109,0.7510403048661136,5.290099483566584,25.385735226614965,4.090909090909091,,"genre_portrait, style_Baroque, 4_styles_Representational/ Figurative art, Anisotropy","genre_landscape, style_Abstract_Expressionism, 4_styles_Non-representational, abstract - lyrical, style_Impressionism",0.00465192162799428
+24,selected,True,1890,109,0.41071918264827684,10.265851105944442,22.083645760211464,3.727272727272727,1-10,"genre_landscape, genre_abstract, Color entropy, 2_styles_ABSTRACT","genre_portrait, genre_nude painting, Edge density, Anisotropy",0.2269623061694883
+1411,selected,False,477,74,0.6216137240269374,5.161814652792631,9.844389291731126,4.363636363636363,1-10,"style_Synthetic_Cubism, Color entropy, Variability, style_Abstract_Expressionism","CNN symmetry left-right, style_Minimalism, 4_styles_Non-representational, abstract - geometric, CNN symmetry up-down",0.12225319878255529
+1165,selected,False,479,77,0.6585009416865072,6.034112705109233,10.702364900435308,1.3636363636363635,,"style_Contemporary_Realism, genre_cityscape, mean G channel, mean L channel","std a channel, std b channel (Lab), style_Cubism, mean S channel",0.17921588627931212
+991,selected,True,478,77,0.575604515139627,6.462522079390062,9.547003446947143,4.090909090909091,1-10,"style_Naive_Art_Primitivism, genre_nude painting, genre_landscape, style_Contemporary_Realism","style_Rococo, style_Northern_Renaissance, genre_still life, style_Mannerism_Late_Renaissance",0.15263480413158562
+1303,selected,True,479,79,0.4627883022078911,7.313823121636479,7.855106172102474,3.5454545454545454,1-10,"style_Abstract_Expressionism, genre_nude painting, Luminance entropy, 4_styles_Non-representational, abstract - lyrical","Variability, style_Naive_Art_Primitivism, Anisotropy, std a channel",0.18138114711124903
+687,selected,True,479,75,0.511591570737961,6.499257719451439,7.928100971999226,2.363636363636364,1-10,"style_Pop_Art, style_Analytical_Cubism, Aspect ratio, style_Action_painting","genre_portrait, style_Mannerism_Late_Renaissance, style_Post_Impressionism, style_Expressionism",0.19053283045240976
+1357,selected,False,478,90,0.6130521207345792,7.823795233473249,10.326998145335518,,,"style_Impressionism, style_Pointillism, CNN symmetry up-down, style_Color_Field_Painting","Variability, style_Synthetic_Cubism, style_Naive_Art_Primitivism, genre_still life",0.2269623061694883
+345,control,False,478,50,0.6688131265722975,1.66969502144796,5.195268035437668,1.7272727272727273,1-10,,,
+1456,control,False,478,89,0.7387820369659017,0.5615060211516915,5.516553067076691,4.2727272727272725,11-25,,,
+1231,control,False,479,93,0.6139138788629712,3.7043752169767727,7.152154423667141,3.272727272727273,11-25,,,
+432,control,False,479,94,0.6802224848285605,3.2966275828965204,8.158914541793713,1.818181818181818,,,,
+402,control,False,478,47,0.6150323670412716,9.444306874913808,10.400722247913167,3.5454545454545454,1-10,,,
+1690,control,True,479,90,0.5517323881258307,16.715893541620222,14.430392921895761,1.2727272727272727,1-10,,,
+6,control,False,1394,106,0.8106034850020671,1.084670511280467,16.664107167076544,3.4545454545454546,1-10,,,
+606,control,True,479,69,0.5342316857979662,13.75966879755526,9.88169941248092,2.272727272727273,1-10,,,
+585,control,False,477,92,0.7793200500357399,1.1417937630915143,11.809441585866248,3.5454545454545454,1-10,,,
+339,control,False,479,77,0.5906398959988445,15.46381592762883,13.530709317301614,2.727272727272727,1-10,,,

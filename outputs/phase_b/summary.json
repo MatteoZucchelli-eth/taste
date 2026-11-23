@@ -1,0 +1,43 @@
+{
+  "encoder": "clip",
+  "head": "mlp",
+  "consensus_steps": 4000,
+  "folds": 5,
+  "seeds": 5,
+  "budgets": [
+    25,
+    50,
+    100,
+    250,
+    500,
+    1000,
+    2500,
+    "all"
+  ],
+  "lambdas": [
+    1e-05,
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    Infinity
+  ],
+  "noise_var_per_rating": 191.8570754066356,
+  "runtime_s": 1533,
+  "control": {
+    "n": 10,
+    "median_gain_pts": 6.942618848081067,
+    "n_c1": 10,
+    "n_c2": 10,
+    "n_c4": 10,
+    "median_frac_gap_closed": 0.7474901083030847
+  },
+  "selected": {
+    "n": 8,
+    "median_gain_pts": 15.72106268795741,
+    "n_c1": 8,
+    "n_c2": 8,
+    "n_c4": 8,
+    "median_frac_gap_closed": 0.7674951528519058
+  }
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "check": "pseudo_raters (should be ~0)",
+    "n": 150,
+    "frac_sig_fdr05": 0.0,
+    "frac_p05": 0.03333333333333333,
+    "gain_median": -0.4473644054648715
+  },
+  {
+    "check": "real raters, non-linear baseline",
+    "n": 553,
+    "frac_sig_fdr05": 0.9493670886075949,
+    "frac_p05": 0.9511754068716094,
+    "gain_median": 2.3809994767389773
+  },
+  {
+    "check": "real raters, abstract/figurative label only",
+    "n": 553,
+    "frac_sig_fdr05": 0.5587703435804702,
+    "frac_p05": 0.5858951175406871,
+    "gain_median": 0.17074067746905897
+  }
+]

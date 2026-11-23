@@ -82,7 +82,7 @@ For a chosen rater A, on A's held-out images/pairs:
 Metrics: pairwise accuracy on within-rater pairs (ties dropped), Spearman (SROCC) per rater. Report everything per rater, with
 CIs, for the few selected "experts" plus a larger rater pool for statistics.
 
-## 6. Planned next steps (none executed yet)
+## 6. Steps (Phase A done 2026-11-22; Phase B not started)
 
 **Phase A: data verification, no model training.**
 1. Download the LAPIS tables (and later the images) into `data/lapis/` (keep the HF folder layout).
@@ -93,6 +93,55 @@ CIs, for the few selected "experts" plus a larger rater pool for statistics.
    This tells us how much *individual* taste exists to learn before we train anything. If it's ≈0 for everyone, stop and rethink.
 5. Select the candidate "experts": high art interest, many ratings, and **low agreement with consensus while staying internally consistent**.
 
+**Phase A decisions (user, 2026-11-22)** — supersede the steps above where they differ:
+- "Expert" = art education/profession, but LAPIS has no such field (only general `demo_edu`, `Art Interest VAIAK`, `imgs_known`).
+  → **Select raters purely on distinct + consistent taste**; report VAIAK/`imgs_known` alongside, not as a filter. The user will later
+  pick whom to mimic.
+- Goal of Phase A: show that some raters *have* a taste that departs from consensus consistently, and find at least one for sure.
+  Eventual pool ≈ 100 raters. If there is enough signal, stop and move to Phase B.
+- The critic always predicts A's *full* preference; Phase A only tests whether A departs from consensus consistently.
+- Every rating difference is a preference (only exact ties dropped). Use all data, no rater filtering at first (filter only if
+  results look bad). All images (abstract + figurative).
+- Phase A uses **only ratings + metadata** (genre/style labels, `image_attributes.csv` stats); no embeddings, no neural models.
+- Method (final): leave-one-out consensus c; generic metadata prediction g of each image's panel mean (cross-fitted ridge);
+  baseline = "consensus critic" = OLS of A's rating on [c, g]. A's deviation = residual from that baseline. Taste = the deviation is
+  predictable from metadata out-of-sample across 20 random half-splits (ridge, λ=1000), permutation null (1000 perms, Gaussian-fitted
+  p), BH-FDR 5% over raters. Effect size = gain in A's held-out pairwise accuracy of baseline+personal ridge over the baseline alone;
+  report counts of significant raters at several gain thresholds. This is a **lower bound** (taste metadata can't describe is
+  invisible). Validated by planted-taste synthetic raters and by pseudo-raters.
+- Why the method changed during development (keep, so it isn't repeated): (1) λ=10 overfit (≈100 features, ≈240 images per half):
+  no-taste synthetic raters *lost* ~5 pts; λ tuned on synthetic raters only (30…3000), 1000 best. (2) With c alone as baseline,
+  95% of raters looked significant partly because the 23-rater LOO consensus is noisy and metadata helps predict the consensus
+  itself → added g to the baseline (and later a non-linear baseline check) so only *personal* deviation counts.
+- Found on load: 63 raters rated some images twice (614 repeated pairs) → small real test–retest check. Duplicates are averaged
+  for the main analysis.
+
+**§6b Phase A results (2026-11-22)** — `outputs/phase_a/{raters.csv,summary.json,checks.json,self_test.csv,phase_a.png}`
+- Setup: 555 raters (553 testable, ≥40 ratings), 86 metadata features, ridge λ=1000 (tuned on synthetic raters only), 20 half-splits,
+  1000 permutations, BH-FDR 5%. Baseline ("consensus critic") = OLS of A's rating on LOO consensus + generic metadata prediction.
+- Noise context: consensus reliability (full panel, Spearman–Brown) 0.84; test–retest on 614 repeated pairs r=0.72, mean |diff| 13.5 pts.
+  Median pairwise agreement of a rater with LOO consensus 0.67 (IQR 0.61–0.73).
+- Validation: synthetic no-taste raters 1% p<.05, 0% FDR; planted 6/10-pt taste found 61%/94%. **Pseudo-raters** (each rating
+  borrowed from a random other rater) 0% FDR-significant → the signal needs a consistent individual.
+- **Result: 530/553 raters have significant consistent taste** beyond consensus+generic metadata. Held-out pairwise gain of the
+  simple personal model over the baseline: median +2.7 pts (IQR 1.4–5.3, max 24.8). Raters significant with gain ≥1/2/3/5 pts:
+  460/335/249/151. Survives a non-linear baseline (95% sig, median +2.4). Abstract/figurative label alone: 56% sig but median +0.17 →
+  taste is broader than that axis. Taste is unrelated to art interest (Spearman VAIAK vs taste z = −0.08).
+- Caveat: the largest gains come from raters who agree with consensus at chance (~0.50) yet are well predicted by metadata (0.73–0.79),
+  often with coarse scale use (e.g. #1381: 12 distinct values). Consistent, but possibly simple heuristics rather than refined taste.
+  141 raters are significant with gain ≥5 pts and pass basic quality flags (median RT ≥1.5 s, <30% of ratings at one value).
+
+**Status / next step (2026-11-22):** Phase A says there is enough signal → per the user's rule, move to Phase B when the user says so.
+Suggested before Phase B: look at a few top raters' highest/lowest-rated images to decide which kind of taste to mimic (see caveat).
+Nothing committed to git yet; `outputs/` is not gitignored.
+
+Rerun Phase A (≈1 min + ≈5 min checks):
+```bash
+docker compose run --rm taste python src/phase_a.py          # → outputs/phase_a/{raters.csv,summary.json,self_test.csv,phase_a.png}
+docker compose run --rm taste python src/phase_a_checks.py   # → outputs/phase_a/checks.json (pseudo-raters, non-linear, abstract-only)
+docker compose run --rm taste python src/phase_a.py --self-test-only --lam 1000   # λ tuning on synthetic raters
+```
+
 **Phase B: critics (GPU machine).**
 6. Embed every image once with a frozen encoder (CLIP ViT-L/14 or SigLIP; DINOv2 as an alternative). Cache the embeddings to disk.
 7. Consensus critic: BT/regression head on the embeddings, trained on all raters (official giaa split).
@@ -100,20 +149,114 @@ CIs, for the few selected "experts" plus a larger rater pool for statistics.
    ratings per rater (10/50/100/all) to get a label-efficiency curve.
 9. Evaluate with the §5 criterion.
 
-## 7. Environment state on the original (non-GPU) machine
+**Phase B decisions (user, 2026-11-22)** — supersede steps 6–9 where they differ:
+- **Pairwise only, everywhere.** In real use people will only answer "this or that", never give a score. LAPIS scores are used only
+  to build within-rater pairs (exact ties dropped); no critic is ever trained on scores; all metrics are pairwise.
+- Encoders: embed with CLIP ViT-L/14, SigLIP 2 and DINOv2 (frozen, cached). Pick by consensus-critic validation pairwise accuracy; report all.
+- Consensus critic: Bradley–Terry head on embeddings, trained on within-rater pairs pooled over all raters. When evaluating rater A,
+  **retrain with A left out** and evaluate only on A's held-out images, which are also excluded from consensus training (as in the Phase A LOO).
+- Personal critic: Ren-2017 style. Frozen consensus score + per-rater linear residual on the embedding, BT loss, L2 toward 0.
+- Raters: **a handful (5–10), chosen to be diverse in taste direction** (Phase A residual directions point different ways).
+  Heuristic raters (§6b caveat) are kept, flagged and reported separately.
+- Label efficiency is measured in **number of pairs** (e.g. 25/50/100/250/500/1000/all, random pairs from A's train images, several seeds).
+- Train on all non-tied pairs; report accuracy **split by score gap** (e.g. <10, 10–30, >30 pts).
+- Deliverables: `src/phase_b_*.py`, `outputs/phase_b/` (JSON/CSV/plots), CONTEXT §6c with the §5 verdict per rater, and a **visual sanity
+  page** showing each selected rater's critic top/bottom images next to the consensus top images.
 
-- Only the **system Python 3.12, without pandas/torch**, no uv/conda, no GPU.
-- An interrupted setup command left `.venv/` (pip install of pandas/numpy/scipy/matplotlib may be incomplete) and a
-  **truncated `data/lapis/piaa/piaa.csv` (82.4 MB of ~83.6 MB). Don't use it; download it again.**
-- Nothing else was run. No analysis code exists yet.
+**§6c Phase B results (2026-11-22)** — `outputs/phase_b/{verdict.csv,summary.json,label_efficiency.csv,personal_curve.csv,cross_critics.csv,
+best_of_n.csv,oof_scores.csv,selected.csv,consensus_select.csv,phase_b.png,sanity.html}`; sanity page https://claude.ai/artifact/TJQr2SvwPeWw4kdvqmUX9y (private).
+- Scripts: `src/phase_b_embed.py` (embeddings → `embeddings/*.npz`), `src/phase_b_critics.py --stage all` (25 min on the 5070 Ti),
+  `src/phase_b_page.py`. Checkpoints in `checkpoints/phase_b/` (gitignored).
+- Encoders (consensus BT critic, giaa val/test, mean per-rater pairwise acc): CLIP-L/14 MLP 0.662/0.664, SigLIP2-SO400M MLP 0.662/0.663,
+  DINOv2-L MLP 0.656/0.658; linear heads ~0.003–0.004 lower. **Chosen: CLIP ViT-L/14 (frozen) + MLP 768→512→1**, 4000 steps.
+- Implementation details beyond the decisions: per-fold consensus excludes *all* 18 evaluated raters and all their test images (one consensus
+  per fold, clean for criterion 2 too); inner CV for λ splits **by image** (splitting by pair leaked: the head memorises per-image utilities);
+  noise ceiling = agreement of A's ratings with A's simulated *true* scores using the global noise var (191.9, from the 614 repeats).
+- Raters: 8 selected (greedy farthest-point on metadata taste direction among 138 candidates: sig, Phase A gain ≥5, RT/scale flags, ≥300 ratings)
+  + 10 random controls (≥300 ratings, not chosen on taste). Heuristic flag = acc with consensus <0.58 or <20 distinct values.
+- **§5 verdict: all 8 selected and all 10 controls pass criteria 1, 2 and 4.**
+  1. Personal vs consensus (all pairs, 5-fold, 95% bootstrap CI): selected median **+15.7 pts** (range +6.8 [201] to +33.0 [24]); controls
+     median **+6.9** (+1.6 to +20.9). Every CI excludes 0.
+  2. Own critic ranks 1st of 18 on its own rater for all 18 raters (e.g. 201: 0.844 own vs 0.713 best other).
+  3. Fraction of the consensus→ceiling gap closed: median 0.77 (selected), 0.75 (controls). The ceiling is rough: control #6 exceeds it (0.893 vs
+     0.857), i.e. the global noise level is too pessimistic for consistent raters.
+  4. Best-of-n (top 10% of A's held-out images): mean A-z of personal picks 0.86–1.55 vs consensus picks −0.10–0.98 (selected); oracle 1.1–1.9.
+- Label efficiency (median gain, selected / controls): 25 pairs +1.5/+0.6, 100 +6.6/+1.5, 250 +12.2/+4.0, 1000 +14.5/+6.4, all +15.7/+6.9.
+  Most of the gain arrives by ~250–500 pairs; CV falls back to consensus-only at 25 pairs in ~40% of fits.
+- By score gap (selected, consensus → personal): <10 pts 0.52→0.56, 10–30 0.56→0.70, >30 0.63→0.86.
+- Readings / caveats: (a) embeddings expose far more individual taste than Phase A metadata (controls +6.9 vs Phase A median +2.7);
+  (b) anti-consensus raters (24, 1303) get β≈0–0.2, i.e. their critic ignores consensus rather than inverting it; (c) the selected group was
+  chosen on Phase A results from the same data → some optimism; controls are the unbiased estimate; (d) the personal model is linear on frozen
+  CLIP; gains plateau after ~1000 pairs with ~25% of the ceiling gap left, so a richer per-rater head (MLP / shared low-rank) is the obvious
+  next test; (e) consensus training-loss curves were not saved (only val acc).
 
-Suggested setup on the GPU machine:
+**Phase C decisions (user, 2026-11-22): shared low-rank taste model.** Goal: better sample efficiency (Phase B gains only
++0.6/+1.5 pts at 25 pairs) and higher accuracy (Phase B plateaus after ~1000 pairs with ~25% of the ceiling gap left).
+- Architecture: **low-rank taste basis** (LoRe 2025 / PAL style). `s_u(x) = c(x) + z_u · V(f(x)) + w_u · f(x)`, where f = image
+  encoder, c = consensus head, V = shared MLP → K taste axes trained on many raters, z_u = K per-person weights, and w_u = a free
+  per-person residual with a strong prior toward 0 (hierarchical). With few pairs only z_u moves; with many, w_u can capture taste
+  outside the basis (needed because the eventual experts are not LAPIS raters).
+- Encoder: **frozen cached CLIP-L/14 first**, then **LoRA-tune the shared encoder** on the training raters as a second step.
+- Rater split: shared trunk/basis trained on **all raters except the 18 Phase B raters** (and without their test images). Validation
+  raters for model selection are taken from those ~537 raters, never the 18. Evaluation uses the same 18 raters and folds as Phase B,
+  so the comparison is direct.
+- K: sweep {1,2,4,8,16,32,64}, pick on validation raters, and report the whole curve (it also measures how many taste dimensions LAPIS has).
+- Pair selection: **random pairs first** (same budgets as Phase B), **then active learning** (choose the most informative pair for z_u,
+  e.g. expected information gain under BT).
+- Metrics: report all-pairs accuracy for continuity, but the **headline is pairs with score gap ≥10**; re-estimate the ceiling
+  **per rater** (the global-noise ceiling is too pessimistic: control #6 exceeds it).
+- Literature added to `papers/INDEX.md` (2026-11-22): LoRe 2025, PAL (ICLR 2025), Zhu 2020 (no PDF), ED-PBRL 2025 (ETH; chosen as
+  the active-learning paper, builds on Bıyık/Sadigh), plus PAM∃LA (Maerten 2026, LAPIS authors: closest prior work).
+
+**§6d Phase C results (2026-11-22, frozen CLIP, random pairs)** — `outputs/phase_c/{ksweep.csv,ksweep_val_grid.csv,kstar.json,
+curve.csv,per_rater_budget.csv,verdict.csv,chosen_cfg.csv,cross_critics.csv,best_of_n.csv,summary.json,phase_c.png}`;
+script `src/phase_c_lowrank.py --stage all` (~70 min on the 5070 Ti). Checkpoints `checkpoints/phase_c/shared_K8_fold*.pt` (U, Z, train history).
+- Implementation notes: validation = 40 raters (≥300 ratings, not in the 18) evaluated on one shared pool of 1000 held-out images
+  (per-rater 20% splits removed ~1/3 of all images from training, so they were dropped). Shared model per fold: 497 raters, ~182k ratings
+  (Phase B consensus also had the 40 val raters). MLP 768→512→K+1, 6000 steps, early stop on 5% held-out images. New user: MAP of z under
+  N(μ, Σ) estimated from training raters' Z (prior scaled by τ), residual w with L2 λ_w; τ and λ_w picked per budget on val raters.
+  Same folds/test pairs as Phase B (asserted).
+- Training: BT loss 0.54→0.47; held-out-image accuracy plateaus at 0.73–0.74 by step ~2000, no overfitting.
+- **K sweep (val raters):** held-out accuracy of training raters rises to K=8 (0.742) then flat (K=64: 0.744); few-shot val score best at
+  **K*=8** (16–64 slightly worse). → LAPIS taste is ~8-dimensional on frozen CLIP. K=0 (consensus + residual only) is clearly worse at small budgets.
+- **Few-shot (headline: pairs with gap ≥10, median over raters, Phase B → Phase C):**
+  controls 25 pairs 0.721→0.744, 50 0.742→0.769, 100 0.754→0.781, 250 0.779→0.789, all 0.799→0.801 (consensus 0.669);
+  selected 25 0.642→0.697, 50 0.675→0.715, 100 0.707→0.727, 250 0.749→0.755, all 0.785→0.776 (consensus 0.612).
+  Phase C at 50–100 pairs ≈ Phase B at 250–500 pairs → **~3–5× fewer pairs**. Improvement holds for 9–10/10 controls at ≤1000 pairs.
+- **No gain at full data**: controls +0.1 pts, selected −0.45 (991, 1357, 1411 lose 1.5–2.5 pts; λ_w picked on average val raters is
+  too strong for very idiosyncratic raters). The plateau is not broken → frozen features are the likely limit → next: LoRA (decided step).
+- Criterion 2 still holds (own critic rank 1 for 18/18); best-of-n similar to Phase B.
+- Training-loss curves of the K sweep were not saved in this run (fixed in the script for future runs: `ksweep_train_curves.csv`).
+- External reference (not comparable protocol): PAM∃LA (Maerten 2026) unseen users 0.663 pairwise all pairs / ~0.80 without near-ties,
+  15 context images, on its own AI-image dataset. LAPIS paper PIAA baselines report pooled SROCC (0.70 seen / 0.28 unseen users), not
+  per-user accuracy. No SOTA claim possible without running a shared protocol.
+
+**Status / next step (2026-11-23):** Phase C step 2 done. Remaining decided steps: per-rater ceiling (step 3), active pair selection
+(step 4), LoRA-tuned shared encoder (step 5, needed to raise the full-data plateau). Optionally pick λ_w by inner CV per rater at large budgets.
+
+## 7. Environment (GPU machine, set up 2026-11-22)
+
+- Machine: RTX 5070 Ti (16 GB, Blackwell, driver 580), 60 GB RAM. Docker 29 with the NVIDIA runtime.
+- **Everything runs in Docker** (user decision, for reproducibility across machines and an easy port to Euler via Apptainer). No `.venv`.
+  - `Dockerfile`: `pytorch/pytorch:2.15.0-cuda13.2-cudnn9-runtime` + `requirements.txt` (pinned pandas, numpy, scipy, matplotlib,
+    open_clip_torch, huggingface_hub). The build fails if pip replaces the base image's CUDA torch.
+  - `compose.yaml`: bind-mounts the repo at `/workspace` (so `data/` and outputs stay on the host) and `~/.cache/huggingface`
+    for model weights; runs as the host user, all GPUs.
+  - Usage: `docker compose run --rm taste` (shell) or `docker compose run --rm taste python src/<script>.py ...`.
+  - One-time per machine: `printf 'UID=%s\nGID=%s\n' $(id -u) $(id -g) > .env` (gitignored) and `mkdir -p ~/.cache/huggingface`.
+- Verified in the container: torch 2.15.0+cu132 sees the GPU and runs a test calculation; `data/` and the HF cache are readable/writable.
+- **Data in `data/lapis/`** (HF layout): all tables downloaded complete (`piaa.csv` 83.6 MB). Images: all **11,723** downloaded (707 MB); every `path` in `piaa.csv` exists and opens with PIL (checked in the container).
+- **Papers:** all 14 PDFs fetched with `bash papers/download.sh`.
+- **Two corrections to §3 found on load:** `piaa.csv` has **555** distinct `participant_id`s (paper says 552), and ratings are
+  on a **0–100** scale (mean 48.5, sd 26.9), not 1–5.
+- Phase A done 2026-11-22: `src/phase_a.py` (main) + `src/phase_a_checks.py` (robustness); outputs in `outputs/phase_a/`. See §6b.
+
+Fetching the data again on a new machine:
 ```bash
-python3 -m venv .venv && .venv/bin/pip install pandas numpy scipy matplotlib torch torchvision open_clip_torch huggingface_hub
 mkdir -p data/lapis && cd data/lapis
 for f in piaa/piaa.csv giaa/train.csv giaa/validation.csv giaa/test.csv image_attributes/image_attributes.csv image_attributes/image_prompts.csv; do
-  mkdir -p $(dirname $f); curl -L -o $f "https://huggingface.co/datasets/asmaerten/LAPIS/resolve/main/$f"; done
-# images (~716 MB): huggingface_hub.snapshot_download("asmaerten/LAPIS", repo_type="dataset", allow_patterns="images/*", local_dir="data/lapis")
+  mkdir -p $(dirname $f); curl -sSfL -o $f "https://huggingface.co/datasets/asmaerten/LAPIS/resolve/main/$f"; done
+cd ../.. && docker compose run --rm taste python -c "from huggingface_hub import snapshot_download as s; s('asmaerten/LAPIS', repo_type='dataset', allow_patterns='images/*', local_dir='data/lapis')"
 ```
 Paper PDFs are not in git: run `bash papers/download.sh` to fetch them all.
 Keep analysis scripts outside `data/` (e.g. in `src/`), and pass data paths as arguments.

@@ -17,6 +17,10 @@ get Jiang2025_ArtificialHivemind.pdf             https://arxiv.org/pdf/2510.2295
 get Yang2022_PARA.pdf                            https://arxiv.org/pdf/2203.16754
 get Maerten2025_LAPIS.pdf                        https://arxiv.org/pdf/2504.07670
 get Ren2017_PersonalizedImageAesthetics.pdf      https://openaccess.thecvf.com/content_ICCV_2017/papers/Ren_Personalized_Image_Aesthetics_ICCV_2017_paper.pdf
+get Maerten2026_PAMELA.pdf                      https://arxiv.org/pdf/2604.07427
+get Bose2025_LoRe.pdf                            https://arxiv.org/pdf/2504.14439
+get Chen2024_PAL.pdf                             https://arxiv.org/pdf/2406.08469
+get Schacht2025_EDPBRL.pdf                       https://arxiv.org/pdf/2512.19057
 get chess_archive/Zaidi2024_MoveBrillianceChess.pdf    https://arxiv.org/pdf/2406.11895
 get chess_archive/McIlroyYoung2020_Maia.pdf            https://arxiv.org/pdf/2006.01855
 get chess_archive/Ruoss2024_AmortizedPlanningChess.pdf https://arxiv.org/pdf/2402.04494

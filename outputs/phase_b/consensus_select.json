@@ -1,0 +1,61 @@
+{
+  "encoder": "clip",
+  "head": "mlp",
+  "steps": 4000,
+  "table": [
+    {
+      "encoder": "clip",
+      "head": "linear",
+      "dim": 768,
+      "best_step": 6000,
+      "val": 0.6592830795862998,
+      "test": 0.6602602497480219,
+      "test_median": 0.6738916169417586
+    },
+    {
+      "encoder": "clip",
+      "head": "mlp",
+      "dim": 768,
+      "best_step": 4000,
+      "val": 0.6617011132538366,
+      "test": 0.6638852395926145,
+      "test_median": 0.6788566746370526
+    },
+    {
+      "encoder": "siglip2",
+      "head": "linear",
+      "dim": 1152,
+      "best_step": 1500,
+      "val": 0.6594087660837279,
+      "test": 0.6615424077983564,
+      "test_median": 0.6806399648350252
+    },
+    {
+      "encoder": "siglip2",
+      "head": "mlp",
+      "dim": 1152,
+      "best_step": 5500,
+      "val": 0.6616786494807438,
+      "test": 0.6633903939492554,
+      "test_median": 0.684452486203257
+    },
+    {
+      "encoder": "dinov2",
+      "head": "linear",
+      "dim": 1024,
+      "best_step": 5500,
+      "val": 0.6518603744040474,
+      "test": 0.6532439640704581,
+      "test_median": 0.6723467178921233
+    },
+    {
+      "encoder": "dinov2",
+      "head": "mlp",
+      "dim": 1024,
+      "best_step": 1500,
+      "val": 0.6556853567358446,
+      "test": 0.6578117964500074,
+      "test_median": 0.6735478328448501
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+ Container taste-taste-run-52398deb8e20 Creating 
+ Container taste-taste-run-52398deb8e20 Created 
+[     0s] 280560 ratings, 555 raters, 11723 images
+[     0s] giaa split sizes (ratings): {'train': 196483, 'test': 56116, 'validation': 27961}
+[     5s] consensus clip     linear val 0.6593 test 0.6603 (step 6000)
+[    23s] consensus clip     mlp    val 0.6617 test 0.6639 (step 4000)
+[    29s] consensus siglip2  linear val 0.6594 test 0.6615 (step 1500)
+[    52s] consensus siglip2  mlp    val 0.6617 test 0.6634 (step 5500)
+[    57s] consensus dinov2   linear val 0.6519 test 0.6532 (step 5500)
+[    78s] consensus dinov2   mlp    val 0.6557 test 0.6578 (step 1500)
+[    78s] chosen: clip mlp 4000
+[    78s] candidates: 138 (of which heuristic 72)
+[    78s] selected:
+ participant_id    group  heuristic    n  n_unique  acc_cons      gain   taste_z    vaiak
+            201 selected      False 1891       109  0.751040  5.290099 25.385735 4.090909
+             24 selected       True 1890       109  0.410719 10.265851 22.083646 3.727273
+           1411 selected      False  477        74  0.621614  5.161815  9.844389 4.363636
+           1165 selected      False  479        77  0.658501  6.034113 10.702365 1.363636
+            991 selected       True  478        77  0.575605  6.462522  9.547003 4.090909
+           1303 selected       True  479        79  0.462788  7.313823  7.855106 3.545455
+            687 selected       True  479        75  0.511592  6.499258  7.928101 2.363636
+           1357 selected      False  478        90  0.613052  7.823795 10.326998      NaN
+            345  control      False  478        50  0.668813  1.669695  5.195268 1.727273
+           1456  control      False  478        89  0.738782  0.561506  5.516553 4.272727
+           1231  control      False  479        93  0.613914  3.704375  7.152154 3.272727
+            432  control      False  479        94  0.680222  3.296628  8.158915 1.818182
+            402  control      False  478        47  0.615032  9.444307 10.400722 3.545455
+           1690  control       True  479        90  0.551732 16.715894 14.430393 1.272727
+              6  control      False 1394       106  0.810603  1.084671 16.664107 3.454545
+            606  control       True  479        69  0.534232 13.759669  9.881699 2.272727
+            585  control      False  477        92  0.779320  1.141794 11.809442 3.545455
+            339  control      False  479        77  0.590640 15.463816 13.530709 2.727273
+[    89s] fold 0: consensus trained on 217308 ratings (9536 images)
+/workspace/src/phase_b_critics.py:356: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/utils/tensor_numpy.cpp:208.)
+  sc_tr, E_tr = sc_all_t[p_tr], Eall[p_tr]
+[   367s] fold 0 done
+[   378s] fold 1: consensus trained on 216682 ratings (9526 images)
+[   650s] fold 1 done
+[   661s] fold 2: consensus trained on 216735 ratings (9520 images)
+[   939s] fold 2 done
+[   950s] fold 3: consensus trained on 217025 ratings (9532 images)
+[  1228s] fold 3 done
+[  1240s] fold 4: consensus trained on 216410 ratings (9511 images)
+[  1516s] fold 4 done
+[  1534s] verdict:
+ participant_id    group  heuristic  acc_consensus  acc_personal  gain_pts  gain_ci_lo  gain_ci_hi  rank_own_critic  ceiling_retest  bon_personal_z  bon_consensus_z
+            201 selected      False          0.776         0.844     6.802       6.027       7.518                1           0.852           1.550            0.981
+             24 selected       True          0.414         0.743    32.984      30.906      35.207                1           0.870           0.909            0.046
+           1411 selected      False          0.628         0.725     9.692       7.399      12.421                1           0.744           0.863            0.647
+           1165 selected      False          0.657         0.725     6.769       4.690       8.717                1           0.759           1.093            0.814
+            991 selected       True          0.580         0.739    15.898      12.821      19.294                1           0.776           1.102            0.296
+           1303 selected       True          0.452         0.679    22.637      17.851      27.357                1           0.686           1.044           -0.099
+            687 selected       True          0.504         0.661    15.709      12.029      19.882                1           0.773           0.961            0.279
+           1357 selected      False          0.599         0.756    15.733      12.551      18.786                1           0.847           1.218            0.881
+            345  control      False          0.678         0.722     4.371       2.487       6.030                1           0.829           1.101            0.795
+           1456  control      False          0.748         0.764     1.603       0.646       2.572                1           0.770           1.102            1.090
+           1231  control      False          0.615         0.697     8.249       5.684      10.944                1           0.852           0.933            0.858
+            432  control      False          0.686         0.742     5.636       3.649       7.413                1           0.802           1.092            1.041
+            402  control      False          0.599         0.758    15.832      12.358      18.767                1           0.835           0.928            0.568
+           1690  control       True          0.537         0.746    20.917      17.601      24.664                1           0.812           0.831            0.655
+              6  control      False          0.839         0.893     5.342       4.700       5.948                1           0.857           1.269            1.188
+            606  control       True          0.532         0.692    15.965      11.966      20.072                1           0.735           0.807            0.585
+            585  control      False          0.802         0.837     3.499       2.136       4.997                1           0.840           1.114            1.103
+            339  control      False          0.589         0.794    20.511      17.283      23.653                1           0.822           1.135            0.808
+[  1534s] {
+ "encoder": "clip",
+ "head": "mlp",
+ "consensus_steps": 4000,
+ "folds": 5,
+ "seeds": 5,
+ "budgets": [
+  25,
+  50,
+  100,
+  250,
+  500,
+  1000,
+  2500,
+  "all"
+ ],
+ "lambdas": [
+  1e-05,
+  0.0001,
+  0.001,
+  0.01,
+  0.1,
+  Infinity
+ ],
+ "noise_var_per_rating": 191.8570754066356,
+ "runtime_s": 1533,
+ "control": {
+  "n": 10,
+  "median_gain_pts": 6.942618848081067,
+  "n_c1": 10,
+  "n_c2": 10,
+  "n_c4": 10,
+  "median_frac_gap_closed": 0.7474901083030847
+ },
+ "selected": {
+  "n": 8,
+  "median_gain_pts": 15.72106268795741,
+  "n_c1": 8,
+  "n_c2": 8,
+  "n_c4": 8,
+  "median_frac_gap_closed": 0.7674951528519058
+ }
+}
+[  1534s] done

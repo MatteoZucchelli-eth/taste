@@ -1,0 +1,22 @@
+# Usage:  docker compose run --rm taste                 # interactive shell
+#         docker compose run --rm taste python src/x.py  # run a script
+# The repo (incl. data/) is bind-mounted, so data and outputs stay on the host.
+services:
+  taste:
+    build: .
+    image: taste:latest
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - .:/workspace
+      - ${HOME}/.cache/huggingface:/cache/huggingface
+    working_dir: /workspace
+    shm_size: 8gb
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

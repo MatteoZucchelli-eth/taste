@@ -42,6 +42,39 @@ The founding PIAA paper. Introduces FLICKR-AES (40k images, 210 AMT raters, 5 pe
 **Use:** the baseline architecture (generic backbone + per-person head) and the few-shot protocol. Active learning matters
 once we label with real experts, whose time is scarce.
 
+### Maerten et al. 2026 — *Personalizing Text-to-Image Generation to Individual Taste (PAM∃LA)* · arXiv 2604.07427
+`Maerten2026_PAMELA.pdf`
+From the LAPIS authors (Tübingen + KU Leuven). A dataset of 5k AI-generated images × 205 raters, plus a personalised reward model:
+frozen SigLIP2, a learnable embedding per user, demographics, and a small fusion transformer, trained jointly on PAM∃LA + **LAPIS** + PARA.
+Unseen users are handled by interpolating the embeddings of nearest training users from 15 rated images. User pairwise accuracy is 0.663;
+it reaches ~0.80 once near-ties are excluded with a margin. It then steers FLUX through prompt optimisation, and a user study finds people prefer images steered by their own model.
+**Use:** the closest prior work, and the external reference point for our few-shot numbers. It also backs our "headline on gap ≥ 10" choice and is a template for step 2.
+
+### Zhu et al. 2020 — *Personalized Image Aesthetics Assessment via Meta-Learning with Bilevel Gradient Optimization* (IEEE T-Cybernetics)
+No PDF (not open access).
+The standard few-shot PIAA baseline: meta-learn an initialisation of the aesthetic model across users, then adapt it to a new user with a few
+gradient steps from 10/100 images.
+**Use:** positions our low-rank model against the meta-learning family (the alternative we did not choose for Phase C).
+
+### Bose et al. 2025 — *LoRe: Personalizing LLMs via Low-Rank Reward Modeling* · arXiv 2504.14439
+`Bose2025_LoRe.pdf`
+Each user's reward is a weighted combination of a few shared basis reward functions learned across users. A new user only fits
+the low-dimensional weights from a few comparisons. Shows few-shot generalisation to unseen users.
+**Use:** the template for the Phase C architecture (shared basis + per-user weights).
+
+### Chen et al. 2024 — *PAL: Pluralistic Alignment Framework for Learning from Heterogeneous Preferences* (ICLR 2025) · arXiv 2406.08469
+`Chen2024_PAL.pdf`
+Ideal-point / mixture model: shared mapping and K prototypes, with each user a mixture of them. Trained on frozen foundation-model embeddings with a
+small MLP, and evaluated on seen vs **unseen** users. Pick-a-Pic results use CLIP-H embeddings. With too few pairs per user, extra prototypes hurt,
+and the pairs a new user needs grow with K.
+**Use:** backs frozen embeddings + MLP + per-user weights, the K sweep, and the unseen-user protocol.
+
+### Schacht, …, Krause 2025 — *Efficient Personalization of Generative Models via Optimal Experimental Design (ED-PBRL)* · arXiv 2512.19057
+`Schacht2025_EDPBRL.pdf`
+Chooses preference queries that maximise information about a latent BT reward (optimal experimental design, convex formulation,
+guarantees). Personalises a text-to-image model to user styles with fewer queries than random. Builds on Sadigh 2017 / Bıyık 2020 active preference learning.
+**Use:** backs the active pair-selection step for the per-user weights.
+
 ## 3. Learning a critic from pairwise comparisons (the core method)
 
 ### Christiano et al. 2017 — *Deep RL from Human Preferences* (NeurIPS) · arXiv 1706.03741

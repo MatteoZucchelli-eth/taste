@@ -1,0 +1,6 @@
+ Container taste-taste-run-85b0e2d0f561 Creating 
+ Container taste-taste-run-85b0e2d0f561 Created 
+[     0s] 280560 ratings; test raters 18; val raters 40
+[     0s] ksweep: shared model on 497 raters, 182198 ratings; 40 val raters
+[   365s] K= 0 monitor 0.6725 | val cons 0.6753 | -1:0.753 25:0.709 50:0.719 100:0.736 250:0.739 500:0.750 1000:0.747 2500:0.754 | score 0.7335
+
