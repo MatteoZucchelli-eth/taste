@@ -2,7 +2,7 @@
 
 **Research question.** Using only one person's own judgments, can we learn a critic that predicts *that person's*
 preference between two images better than a consensus model does, approaching how consistent the person is with themselves?
-End goal: design generation. Later step (not started): use the critic as the reward for a generator (diffusion).
+End goal: design generation. Step 2 (started 2026-11-23, see §6): use the critic as the reward for a generator (diffusion), as a simple proof of concept with strong KL regularisation.
 
 **Success criterion (pre-registered, before any training).** On held-out pairs for rater A:
 `agree(critic_A, A)` > `agree(critic_consensus, A)` and > `agree(critic_B, A)`, measured against A's
@@ -126,6 +126,68 @@ The original inspiration. RL with a **hand-designed** creativity scorer. Their s
 with user popularity (Table 6), and optimising it led to reward hacking (Sec 4, App. H).
 **Use:** the motivating contrast. A hand-written scorer misses taste; we try to learn it. RL tricks (KL, diversity filters) are for step 2.
 
+## 6. Step 2: RL fine-tuning of a diffusion generator against the critic (added 2026-11-23)
+
+Step 2 is a proof of concept. A pretrained text-to-image model is the actor, the personal critic (§2–3) is the reward, and a
+**strong KL penalty toward the base model** limits how far the actor can move. The objective in every paper below has the same form:
+`max E[r(x)] − β·KL(p_θ ‖ p_base)`, whose optimum is the "tilted" distribution `p_base(x)·exp(r(x)/β)`.
+Each paper answers a different design question. ImageReward/ReFL (Xu 2023, §4) and Gao 2022 (§5) also apply here.
+
+### Uehara, Zhao, Biancalani & Levine 2024 — *Understanding RL-Based Fine-Tuning of Diffusion Models: A Tutorial and Review* · arXiv 2407.13734
+`Uehara2024_RLDiffusionTutorial.pdf`
+A survey that puts every family into one KL-regularised framework: PPO-style policy gradient, direct reward backprop, reward-weighted MLE,
+value-weighted sampling, and path consistency. For each it covers the target distribution, when the reward must be differentiable, and the strengths and weaknesses.
+**Use:** the map of the design space, and the shared notation for the KL-regularised objective.
+
+### Black, Janner, Du, Kostrikov & Levine 2023 — *Training Diffusion Models with RL (DDPO)* (ICLR 2024) · arXiv 2305.13301
+`Black2023_DDPO.pdf`
+Treats the denoising chain as a multi-step MDP (each step is a Gaussian action with a tractable log-probability) and applies policy gradient
+(REINFORCE or a PPO-style clipped ratio). Uses SD 1.4 with LoRA. Rewards are compressibility, the **LAION aesthetic predictor (a linear head on CLIP
+embeddings, which has the same shape as our critic)**, and VLM-judged prompt alignment. Works across hundreds of prompts and generalises to unseen ones.
+It **has no KL term and leaves overoptimization out of scope** (App. A).
+**Use:** the reference online-RL formulation. The reward only needs to be evaluated, not differentiated.
+
+### Fan, Watkins, Du, …, Lee 2023 — *DPOK: RL for Fine-tuning Text-to-Image Diffusion Models* (NeurIPS 2023) · arXiv 2305.16381
+`Fan2023_DPOK.pdf`
+Online policy gradient plus **KL regularisation to the pretrained model**, using an upper bound of the KL that splits into a sum of per-step KLs
+between Gaussian denoising steps (cheap to compute). Compares KL-regularised RL with KL-regularised supervised fine-tuning, with ImageReward as the reward on SD 1.5 + LoRA.
+KL keeps image quality from collapsing while the reward goes up.
+**Use:** the template for how to add and tune the KL term (β) in policy-gradient diffusion RL.
+
+### Clark, Vicol, Swersky & Fleet 2023 — *Directly Fine-Tuning Diffusion Models on Differentiable Rewards (DRaFT)* (ICLR 2024) · arXiv 2309.17400
+`Clark2023_DRaFT.pdf`
+Backpropagates the reward gradient through the sampling chain: full chain, the **last K steps only (DRaFT-K)**, or K=1 with lower variance
+(DRaFT-LV). It is more sample-efficient than RL by orders of magnitude when the reward is differentiable. Uses SD 1.4 + LoRA, with aesthetic and HPSv2 rewards.
+It reports reward hacking (diversity collapse). As a regulariser, **scaling the LoRA weights interpolates between base and fine-tuned models
+and worked better than KL or early stopping** in their tests.
+**Use:** the gradient-based alternative. It applies because our critic (frozen CLIP + MLP) is differentiable end to end.
+
+### Wallace, Dang, Rafailov, …, Naik 2023 — *Diffusion Model Alignment Using Direct Preference Optimization (Diffusion-DPO)* (CVPR 2024) · arXiv 2311.12908
+`Wallace2023_DiffusionDPO.pdf`
+DPO adapted to diffusion through the ELBO. It trains directly on **pairwise preferences** (Pick-a-Pic, 851k pairs) with no explicit reward model and
+no online sampling. β is the implicit KL strength toward the reference model. Used on SD 1.5 and SDXL.
+**Use:** the offline / pairwise alternative to online RL. Pairs could come from the critic ranking the base model's samples, or straight from the person.
+
+### Liu, Liu, Liang, …, Ouyang 2025 — *Flow-GRPO: Training Flow Matching Models via Online RL* (NeurIPS 2025) · arXiv 2505.05470
+`Liu2025_FlowGRPO.pdf`
+GRPO (group-relative advantages, no value network) for **flow-matching** models such as SD3.5-M. It needs (1) an ODE→SDE conversion with the same marginals so that
+sampling is stochastic and has log-probabilities, and (2) "denoising reduction": few steps during training, the full step count at inference. It shows that
+**a KL constraint prevents reward hacking and is not equivalent to early stopping**. GenEval goes from 63% to 95%, and it also reports PickScore alignment. Code is public.
+**Use:** the policy-gradient recipe for a modern flow-matching base model, with its KL ablation.
+
+### Domingo-Enrich, Drozdzal, Karrer & Chen 2024 — *Adjoint Matching* (ICLR 2025) · arXiv 2409.08861
+`DomingoEnrich2024_AdjointMatching.pdf`
+Frames KL-regularised reward fine-tuning as stochastic optimal control. It proves that **naively adding a KL term does not reach the tilted distribution**
+(the "initial value function bias") unless fine-tuning uses a specific *memoryless* noise schedule, and it gives a regression-style algorithm. Works for both
+flow matching and diffusion. Reports better realism, sample diversity and generalisation to unseen reward models than prior methods.
+**Use:** the theory of what "strong KL regularisation" actually converges to, and why the noise schedule matters for that.
+
+### Zhang, Zhang, Zhan, Luo, Wen & Tao 2024 — *Confronting Reward Overoptimization for Diffusion Models (TDPO-R)* (ICML 2024) · arXiv 2402.08552
+`Zhang2024_TDPO_RewardOveroptimization.pdf`
+Diffusion-specific reward overoptimization. It optimises one learned reward and measures others it never trained on (cross-reward evaluation), uses per-timestep rewards (temporal
+inductive bias), and resets active neurons in the critic.
+**Use:** a protocol for detecting overoptimization in diffusion: score the actor's images with held-out rewards that were not optimised (Gao 2022 transposed to images).
+
 ---
 
 ## Moved out
@@ -137,7 +199,7 @@ dropped chess (2026-11-22). Bring them back only if we return to chess.
 
 ## Considered and left out
 NIMA, AVA (aggregate scores only, no per-rater IDs) · FLICKR-AES data (5 raters/image, too sparse for rater-vs-rater analysis; PARA supersedes it) ·
-RewardBench / LLM-as-a-judge (add only if we test a VLM judge as a baseline) · HPSv2 (redundant) · DPO / RL algorithms (step 2).
+RewardBench / LLM-as-a-judge (add only if we test a VLM judge as a baseline) · HPSv2 (redundant) · AlignProp (Prabhudesai 2023, 2310.03739: reward backprop, which DRaFT covers) · Uehara et al. 2024 entropy-regularised control (2402.15194: the tutorial covers it).
 
 ## Open question for later
 The end goal is *design* (layouts, graphics), not photos or paintings. We will need a design-specific preference dataset, or our own

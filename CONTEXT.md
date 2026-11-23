@@ -1,6 +1,6 @@
 # Project context — handoff (written 2026-11-22)
 
-Read this first, then `papers/INDEX.md`. This file is the full state of the project so far, so work can resume
+Read this first, then `papers/INDEX.md`. **Current work: step 2, see §6g.** This file is the full state of the project so far, so work can resume
 on another machine (one with a GPU) without the original chat.
 
 ## 1. Goal
@@ -12,7 +12,7 @@ experts*, and only later use it as the reward for a generator.
 - The **end goal is design generation**, so the domain is images. Chess was dropped.
 - **Step 1 (current): learn and verify a pairwise critic.** Given two items, it predicts which one a specific person prefers.
   Then check whether its scores match that person's.
-- **Step 2 (deferred, do not start until the user asks):** use the critic as the RL / fine-tuning reward for a generator
+- **Step 2 (started 2026-11-23 at the user's request; see §6g):** use the critic as the RL / fine-tuning reward for a generator
   (e.g. diffusion, à la ImageReward/ReFL).
 - The user wants to model a **few experts individually**, not a consensus. Averaging raters erases taste (Artificial Hivemind 2025).
 - **The critic must be verified before any training of a generator.**
@@ -63,6 +63,7 @@ experts*, and only later use it as the reward for a generator.
 | Pairwise → scales, study design | Pérez-Ortiz & Mantiuk 2017 |
 | Image critics + bridge to diffusion | Kirstain 2023 PickScore (CLIP + BT head); Xu 2023 ImageReward (expert comparisons → ReFL) |
 | Risks / motivation | Gao 2022 RM overoptimization; Jiang 2025 Artificial Hivemind; Feng 2025 (origin) |
+| Step 2: diffusion RL with KL (INDEX §6) | Uehara 2024 tutorial; DDPO 2023; DPOK 2023 (KL); DRaFT 2023 (reward backprop); Diffusion-DPO 2023; Flow-GRPO 2025; Adjoint Matching 2024 (KL theory); TDPO-R 2024 (overoptimization) |
 
 `papers/chess_archive/` holds the set-aside chess papers (Zaidi 2024, Maia 2020, Ruoss 2024).
 
@@ -82,7 +83,7 @@ For a chosen rater A, on A's held-out images/pairs:
 Metrics: pairwise accuracy on within-rater pairs (ties dropped), Spearman (SROCC) per rater. Report everything per rater, with
 CIs, for the few selected "experts" plus a larger rater pool for statistics.
 
-## 6. Steps (Phase A done 2026-11-22; Phase B not started)
+## 6. Steps (Phases A–C, active learning and the app done 2026-11-22/23; step 2 in progress, see §6g)
 
 **Phase A: data verification, no model training.**
 1. Download the LAPIS tables (and later the images) into `data/lapis/` (keep the HF folder layout).
@@ -254,8 +255,74 @@ inner CV at 10/25/50/100/250 pairs.
 - Also: `src/axes_page.py` → `outputs/phase_c/axes.html`, top/bottom LAPIS images per shared axis (fold 0), published privately at
   https://claude.ai/artifact/WEVBtxXDxtwHtZWR25qw58. Each axis is one scalar per image (MLP 768→512→9); a person = 9 weights.
 
-**Status / next step (2026-11-23):** Remaining decided step: per-rater ceiling (how much accuracy is left on LAPIS). Commit 1ca9cc8 and
+**Status (2026-11-23):** The per-rater ceiling step (how much accuracy is left on LAPIS) is still open but **parked**: the user started step 2 instead (§6g). Commit 1ca9cc8 and
 later commits are not pushed: no GitHub credentials on this machine (SSH key not on the account, no gh CLI).
+
+## 6g. Step 2: RL of a diffusion actor against the user's taste (started 2026-11-23). READ THIS FIRST IN A NEW CHAT
+
+Goal: a *very simple proof of concept* of whether RL against a personal critic produces images the person finds more tasteful.
+The actor is a pretrained text-to-image model, the reward is the user's critic, and **strong KL regularisation** keeps the actor near the base model.
+The literature is in `papers/INDEX.md` §6 (8 papers: Uehara tutorial, DDPO, DPOK, DRaFT, Diffusion-DPO, Flow-GRPO, Adjoint Matching, TDPO-R).
+How the decisions were made: the user answered 10 questions **without seeing recommendations** (to avoid bias), then compared them with Claude's
+recommendations and adopted SD 1.5 plus all of Claude's other recommendations. **Nothing in step 2 is implemented yet** except the data-collection session below.
+
+**Final decisions (user, 2026-11-23):**
+1. **Actor: Stable Diffusion 1.5** (UNet ~0.9B, 512 px). Weights: HF `stable-diffusion-v1-5/stable-diffusion-v1-5` (the original
+   `runwayml` repo was taken down; check its licence/gating on first download). Chosen over SD3.5-M because the DDPO/DPOK recipes were
+   built on SD 1.x, it needs no ODE->SDE conversion, it is ~3x smaller (more samples per hour on 16 GB), and the critic only sees 224 px CLIP inputs.
+2. **Algorithm: online policy gradient, DDPO/DPOK style.** Denoising = MDP; DDIM sampler with eta=1 (stochastic, so each step is a
+   Gaussian with a known log-prob; DDPO uses 50 steps, fewer is fine for a PoC); PPO-clipped ratio, per-prompt advantage normalisation;
+   **explicit per-step KL to the base model** (DPOK: KL between Gaussians = ||mu_theta - mu_base||^2 / (2 sigma_t^2), summed over steps).
+   With LoRA, the base model = the same UNet with the adapter disabled, so no second copy in memory. Reward is a black box (no gradients needed).
+3. **Reward: the user's own taste.** Critic r(x) = z · U(f(x)), where f = frozen CLIP ViT-L/14 image embedding (open_clip `ViT-L-14-quickgelu`/`openai`,
+   **same preprocessing as `src/phase_b_embed.py`**), U = Phase C shared MLP (`checkpoints/phase_c/shared_K8_fold0.pt`, K=8 -> 9 outputs incl. the
+   consensus axis), z = the user's 9 weights. Refit z in Python from the 100-pick session (`fit_users` in `src/phase_c_lowrank.py`; the app's JS fit
+   matches it to 6e-7; prior mu/Sinv/tau as in `app/data/meta.json`, or re-pick tau for 100 pairs). **Drop the side-bias term b** from the reward.
+4. **Prompts: small hand-made set**, ~30 generic art/design prompts (subjects × media/styles), ~20 for training, ~10 held out for evaluation only.
+5. **KL: sweep 3–4 fixed beta values**, very strong -> moderate, one run each. Plot reward vs KL (a mini Gao-2022 curve).
+6. **Trainable: small-rank LoRA** (rank 4–8) on the UNet attention layers.
+7. **Compute: a few hours per run** on the local RTX 5070 Ti (16 GB), in the Docker setup (§7). Measure samples/hour first and size the runs from it.
+8. **Baselines** (same prompts and seeds): (a) **base SD 1.5**; (b) **best-of-N** from the base model picked by the user's critic (N fixed, e.g. 16: the
+   distribution strong-KL RL approximates; if best-of-N already wins, RL only amortises it); (c) **consensus-critic actor**: the identical RL run with
+   z = population mean mu (the app's "average taste" model), so the only difference from the personal actor is z. This separates "more tasteful
+   for the user" from "generically prettier".
+9. **Automatic checks** (during and after training): **KL / drift from base** (KL estimate + similarity of tuned vs base image for the same seed);
+   **prompt fit** (text-image score with an encoder other than the reward's, e.g. SigLIP2); **diversity** (mean pairwise embedding distance across
+   seeds within a prompt, e.g. DINOv2); **held-out critic**: the user's personal critic on **SigLIP2** embeddings (Phase B style: frozen
+   `checkpoints/phase_b/consensus_siglip2_mlp_giaa.pt` + a per-user linear residual fitted on the user's session pairs, validated on the 20 test pairs).
+   It is never optimised, so if the CLIP reward rises and the SigLIP critic does not, that is CLIP-specific reward hacking (Gao 2022; TDPO-R).
+10. **Human eval: blind multi-arm pairwise in the app.** Arms: base, best-of-N, personal actor at each beta, consensus actor. Pairs show two arms for the
+    same held-out prompt and seed, sides randomised, arm hidden. This needs a new app mode that serves generated images (not built yet). Analyse with
+    win rates / Bradley–Terry per arm with CIs.
+
+Known risk: the critic was trained on LAPIS artworks; SD outputs are out of distribution for it. The held-out SigLIP critic and the human eval address this.
+
+**Data collection: the user's 100-pick session (built and tested 2026-11-23).**
+- URL: `http://localhost:8000/?train=100&test=20&mix=1&tag=me` (start the server with `python3 app/serve.py`; it also prints the LAN address).
+  100 learning pairs: the first 5 random, then alternating random / infogain (`mix=1`). Random pairs keep the data representative for fitting the
+  SigLIP held-out critic; infogain sharpens z. Then 20 random test pairs, where the model's guess is locked before each pair is shown → honest held-out accuracy.
+- The session is saved to **`outputs/user_taste/<id>.json`** (server POST `/api/session`). It is checkpointed every 10 learning / 5 test answers
+  (`partial: true`) and overwritten by the final record (`partial: false`). Each pair has image ids, LAPIS paths (`topPath`/`bottomPath` under
+  `data/lapis/images/`), choice `y` (1 = top chosen), response time, `rnd` (random vs infogain), and the record has the final z and side bias.
+- **Status: done (2026-11-23).** File: `outputs/user_taste/2026-11-23T20-58-31-096Z_m27khg.json` (tag `me`, partial false; 100 learning pairs =
+  52 random + 48 infogain, 20 test pairs). Median response time 4.2 s (min 1.1 s); top/bottom rate 0.49; side bias -0.09 (negligible).
+  **Held-out test: the frozen-model critic predicted 16/20 picks (0.80; Wilson 95% CI ~0.58-0.92; P(>=16 | chance) = 0.006); the crowd model
+  (z = mu) predicted only 9/20** → the user's taste departs from consensus and the critic captures it, though 20 pairs give a wide CI.
+  App z (JS fit; refit in Python before use): consensus weight 0.54 vs population 0.95. Strongest traits (sd from population mean): against the grain
+  -2.0, stark B&W (axis 8 low) -1.9, raw gestural marks (axis 2 high) +1.7, baroque drama (axis 5 high) +1.0.
+
+**Practical notes for the new chat.**
+- Restart the app: `bash app/start.sh` (port 8000 by default; Ctrl+C stops it). Not needed for building the RL framework itself.
+- The Docker image has no diffusion stack yet: add pinned `diffusers`, `transformers`, `peft`, `accelerate` (and whatever the prompt-fit /
+  diversity metrics need) to `requirements.txt` and rebuild (`docker compose build`). Torch must still come from the base image (the build fails otherwise).
+  SD 1.5 weights go to the bind-mounted `~/.cache/huggingface`.
+- Git: the step-2 changes so far (papers/INDEX.md, papers/download.sh, CONTEXT.md, app/*, app/start.sh) and `outputs/user_taste/` are **not committed yet**
+  (outputs/ is not gitignored). Paper PDFs are gitignored: `bash papers/download.sh` fetches all, including the 8 step-2 papers.
+
+**Suggested build order for the new chat** (each step verified before the next): (1) load and validate the session, refit z, fit the SigLIP held-out critic,
+report test accuracy on the 20 pairs; (2) reward function on generated images + sanity check (critic top/bottom among ~200 base SD 1.5 samples, shown on a page);
+(3) best-of-N baseline; (4) DDPO/DPOK trainer with LoRA + KL, a short smoke run, measure throughput; (5) beta sweep + consensus actor; (6) automatic checks;
+(7) app eval mode + the user's blind test.
 
 ## 7. Environment (GPU machine, set up 2026-11-22)
 
@@ -303,10 +370,14 @@ link (`#c=` carries name, score and z → friend sees "taste match %" = correlat
 - No content filter: all images can appear in questions, picks and on the share card (user decision, 2026-11-23).
 - Checks: JS MAP fit = Python `fit_users` to 6e-7; simulated users from the population prior: infogain 0.857 / random 0.823 /
   consensus 0.745 agreement with the true preference; full flow tested in WebKit (iPhone 15 emulation), light/dark, landscape.
-- Run: `python3 app/serve.py` → open `http://<LAN IP>:8000` on the phone (same Wi-Fi). Re-export: `docker compose run --rm taste
+- Long sessions and server saving (2026-11-23): URL params `train`, `test`, `mix=1`, `tag`; sessions are POSTed to `/api/session` → `outputs/user_taste/` (see §6g).
+- Run: `bash app/start.sh [port]` (wrapper around `python3 app/serve.py`) → open `http://<LAN IP>:8000` on the phone (same Wi-Fi). Re-export: `docker compose run --rm taste
   python src/app_export.py`. Vercel plan: app as static files; images in Vercel Blob (set `imgBase` in `app/config.js`).
 
 ## 8. Working preferences of the user
-- Decisions are made step by step. Verify before training. Do not start step 2 (RL/generator) unless asked.
+- Decisions are made step by step. Verify before training. Step 2 (RL/generator) was started at the user's request on 2026-11-23 (§6g);
+  still verify each build step (e.g. the reward on generated images) before launching training runs.
+- When the user asks for questions "without recommendations", ask neutrally (options with facts and trade-offs only). They may then ask
+  for Claude's recommendations to compare, and explain from first principles when they don't know a method.
 - Science-backed choices only, from the best papers. Keep the reading list small and update `papers/INDEX.md` when it changes.
 - The user prefers to choose the direction (e.g. picked LAPIS over PARA, dropped chess). Propose a recommendation and let them decide.

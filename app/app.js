@@ -9,6 +9,19 @@
  * is shown. Positions are randomised on every pair, and b soaks up any side preference so it does not leak into z.
  */
 const CFG = window.TASTE_CONFIG;
+// URL overrides for long data-collection sessions, e.g. ?train=100&test=20&mix=1
+//   train/test = number of learning / test pairs; mix=1 alternates random and infogain questions after the first nRandom
+//   (random pairs keep the data representative for fitting other critics later; infogain sharpens z).
+{
+  const q = new URLSearchParams(location.search);
+  const int = (k, lo, hi) => { const v = parseInt(q.get(k), 10); return Number.isFinite(v) ? Math.max(lo, Math.min(hi, v)) : null; };
+  CFG.nTrain = int("train", 5, 400) ?? CFG.nTrain;
+  CFG.nTest = int("test", 1, 100) ?? CFG.nTest;
+  CFG.mixRandom = q.get("mix") === "1";
+  CFG.tag = (q.get("tag") || "").replace(/[^\w-]/g, "").slice(0, 40);
+}
+/** Question n (0-based) is a random pair? */
+const isRandomQ = (n) => n < CFG.nRandom || (CFG.mixRandom && (n - CFG.nRandom) % 2 === 1);
 const $ = (id) => document.getElementById(id);
 
 // Pole names, read off the top/bottom images of each axis (fold-0 shared model; see outputs/phase_c/axes.html).
@@ -180,9 +193,8 @@ function setHeader() {
 // ------------------------------------------------------------------ training phase
 function nextTrainPair() {
   const n = S.answers.length;
-  const key = n < CFG.nRandom || !S.ahead ? null : S.answers[n - 1].y;
-  const pr = key === null ? (S.ahead?.any ?? place(n < CFG.nRandom ? randomPair() : infoPair(S.answers, new Set())))
-                          : S.ahead[key];
+  let pr = S.ahead ? (S.ahead.any ?? S.ahead[S.answers[n - 1].y]) : null;
+  if (!pr) pr = place(isRandomQ(n) ? randomPair() : infoPair(S.answers, new Set()));
   S.ahead = null;
   return pr;
 }
@@ -191,7 +203,7 @@ function planAhead(cur) {
   const n = S.answers.length + 1; // answers after this one
   if (n >= CFG.nTrain) return;
   const ex = new Set([cur.top, cur.bottom]);
-  if (n < CFG.nRandom) {
+  if (isRandomQ(n)) {
     const pr = place(randomPair(ex));
     S.ahead = { any: pr };
     preload(pr.top); preload(pr.bottom);
@@ -224,12 +236,14 @@ function onPick(k) {
   if (S.phase === "train") {
     S.answers.push({ top: S.cur.top, bottom: S.cur.bottom, y: k === 0 ? 1 : 0, ms: Math.round(dt) });
     if (!S.ahead && S.answers.length < CFG.nTrain) planAhead(S.cur); // tapped before planning finished
+    if (S.answers.length % 10 === 0) savePartial();
     setTimeout(() => {
       if (S.answers.length >= CFG.nTrain) finishTraining();
       else trainStep();
     }, 160);
   } else {
     revealTest(k, dt);
+    if (S.tests.length % 5 === 0) savePartial();
   }
 }
 
@@ -447,28 +461,44 @@ async function share() {
 }
 
 // ------------------------------------------------------------------ session log (kept on the device for now)
-function saveSession() {
-  const rec = {
-    v: 1, at: new Date().toISOString(), model: M.source, challengeFrom: S.challenge ? S.challenge.n : null,
-    train: S.answers.map((a) => ({ top: M.image_id[a.top], bottom: M.image_id[a.bottom], y: a.y, ms: a.ms })),
-    test: S.tests.map((t) => ({ top: M.image_id[t.top], bottom: M.image_id[t.bottom], choice: t.choice, pred: t.pred,
+function buildRec(partial) {
+  const done = S.tests.filter((t) => t.choice !== undefined);
+  return {
+    v: 2, id: S.id, partial, at: new Date().toISOString(), model: M.source, challengeFrom: S.challenge ? S.challenge.n : null,
+    tag: CFG.tag, nTrain: CFG.nTrain, nTest: CFG.nTest, nRandom: CFG.nRandom, mixRandom: CFG.mixRandom,
+    // q = question index; rnd = whether it was a random (not infogain) pair; paths join to data/lapis/images/
+    train: S.answers.map((a, q) => ({ top: M.image_id[a.top], bottom: M.image_id[a.bottom], topPath: M.path[a.top],
+                                       bottomPath: M.path[a.bottom], y: a.y, ms: a.ms, rnd: isRandomQ(q) })),
+    test: done.map((t) => ({ top: M.image_id[t.top], bottom: M.image_id[t.bottom], topPath: M.path[t.top],
+                                 bottomPath: M.path[t.bottom], choice: t.choice, pred: t.pred,
                                  conf: +t.conf.toFixed(3), cons: t.cons, ms: t.ms })),
-    z: S.z.map((v) => +v.toFixed(5)), sideBias: +S.b.toFixed(4), hits: S.hits,
-    topRate: +((S.answers.filter((a) => a.y === 1).length + S.tests.filter((t) => t.choice === 0).length) /
-               (S.answers.length + S.tests.length)).toFixed(3),
+    z: S.z ? S.z.map((v) => +v.toFixed(5)) : null, sideBias: S.z ? +S.b.toFixed(4) : null, hits: S.hits ?? null,
+    topRate: +((S.answers.filter((a) => a.y === 1).length + done.filter((t) => t.choice === 0).length) /
+               Math.max(1, S.answers.length + done.length)).toFixed(3),
   };
+}
+/** Progress checkpoint (same id, overwritten on the server) so a long session survives a closed tab. */
+function savePartial() {
+  fetch("api/session", { method: "POST", headers: { "Content-Type": "application/json" },
+                         body: JSON.stringify(buildRec(true)) }).catch(() => {});
+}
+function saveSession() {
+  const rec = buildRec(false);
   try {
     const all = JSON.parse(localStorage.getItem("taste_sessions") || "[]");
     all.push(rec);
     localStorage.setItem("taste_sessions", JSON.stringify(all));
   } catch {}
-  // Later: POST rec to a Vercel Function that writes to a database.
+  // Local server (serve.py) writes the record to outputs/user_taste/. Later: a Vercel Function + database.
+  fetch("api/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rec) })
+    .then((r) => { $("r-saved").textContent = r.ok ? "Saved on the server." : "Server did not save this session."; })
+    .catch(() => { $("r-saved").textContent = "Server not reachable: session kept on this device only."; });
 }
 
 // ------------------------------------------------------------------ boot
 function newSession() {
   const pool = [...Array(N).keys()];
-  S = { phase: "train", answers: [], tests: [], used: new Set(), pool, ahead: null, locked: true,
+  S = { id: new Date().toISOString().replace(/[:.]/g, "-") + "_" + Math.random().toString(36).slice(2, 8), phase: "train", answers: [], tests: [], used: new Set(), pool, ahead: null, locked: true,
         challenge: readChallenge() };
 }
 async function boot() {

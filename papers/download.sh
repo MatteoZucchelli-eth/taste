@@ -21,6 +21,14 @@ get Maerten2026_PAMELA.pdf                      https://arxiv.org/pdf/2604.07427
 get Bose2025_LoRe.pdf                            https://arxiv.org/pdf/2504.14439
 get Chen2024_PAL.pdf                             https://arxiv.org/pdf/2406.08469
 get Schacht2025_EDPBRL.pdf                       https://arxiv.org/pdf/2512.19057
+get Black2023_DDPO.pdf                           https://arxiv.org/pdf/2305.13301
+get Fan2023_DPOK.pdf                             https://arxiv.org/pdf/2305.16381
+get Clark2023_DRaFT.pdf                          https://arxiv.org/pdf/2309.17400
+get Wallace2023_DiffusionDPO.pdf                 https://arxiv.org/pdf/2311.12908
+get Uehara2024_RLDiffusionTutorial.pdf           https://arxiv.org/pdf/2407.13734
+get Liu2025_FlowGRPO.pdf                         https://arxiv.org/pdf/2505.05470
+get DomingoEnrich2024_AdjointMatching.pdf        https://arxiv.org/pdf/2409.08861
+get Zhang2024_TDPO_RewardOveroptimization.pdf    https://arxiv.org/pdf/2402.08552
 get chess_archive/Zaidi2024_MoveBrillianceChess.pdf    https://arxiv.org/pdf/2406.11895
 get chess_archive/McIlroyYoung2020_Maia.pdf            https://arxiv.org/pdf/2006.01855
 get chess_archive/Ruoss2024_AmortizedPlanningChess.pdf https://arxiv.org/pdf/2402.04494

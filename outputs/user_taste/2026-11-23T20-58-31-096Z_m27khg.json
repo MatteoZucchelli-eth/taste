@@ -1,0 +1,1151 @@
+{
+ "v": 2,
+ "id": "2026-11-23T20-58-31-096Z_m27khg",
+ "partial": false,
+ "at": "2026-11-23T21:09:21.280Z",
+ "model": "Phase C shared model, fold 0, K=8, frozen CLIP-L/14; tau from validation at 25 pairs",
+ "challengeFrom": null,
+ "tag": "me",
+ "nTrain": 100,
+ "nTest": 20,
+ "nRandom": 5,
+ "mixRandom": true,
+ "train": [
+  {
+   "top": 40146,
+   "bottom": 2268,
+   "topPath": "abstract/gene-davis_passion-flower-1968(1).jpg",
+   "bottomPath": "abstract/gene-davis_red-dog-1961.jpg",
+   "y": 1,
+   "ms": 7464,
+   "rnd": true
+  },
+  {
+   "top": 5694,
+   "bottom": 34017,
+   "topPath": "figurative/sir-lawrence-alma-tadema_the-golden-hour-1908.jpg",
+   "bottomPath": "abstract/brice-marden_for-caroline-1977.jpg",
+   "y": 0,
+   "ms": 7535,
+   "rnd": true
+  },
+  {
+   "top": 43809,
+   "bottom": 32349,
+   "topPath": "figurative/henri-matisse_standing-model.jpg",
+   "bottomPath": "figurative/antoine-pesne_carl-heinrich-graun.jpg",
+   "y": 1,
+   "ms": 3879,
+   "rnd": true
+  },
+  {
+   "top": 37062,
+   "bottom": 49797,
+   "topPath": "figurative/egon-schiele_ceramics-1918.jpg",
+   "bottomPath": "figurative/kazimir-malevich_head-of-peasant-1.jpg",
+   "y": 0,
+   "ms": 4477,
+   "rnd": true
+  },
+  {
+   "top": 53109,
+   "bottom": 44535,
+   "topPath": "figurative/martiros-saryan_buddhist-still-life-1919.jpg",
+   "bottomPath": "abstract/howard-mehring_japanese-composition-1958.jpg",
+   "y": 1,
+   "ms": 2744,
+   "rnd": true
+  },
+  {
+   "top": 58704,
+   "bottom": 47640,
+   "topPath": "figurative/philip-pearlstein_two-models-in-a-window-with-cast-iron-toys-1987.jpg",
+   "bottomPath": "abstract/joan-mitchell_untitled-1959.jpg",
+   "y": 1,
+   "ms": 6449,
+   "rnd": false
+  },
+  {
+   "top": 42681,
+   "bottom": 41154,
+   "topPath": "abstract/helen-frankenthaler_black-eyed-susan-1988.jpg",
+   "bottomPath": "abstract/gerhard-richter_abstract-painting-no-439.jpg",
+   "y": 0,
+   "ms": 3830,
+   "rnd": true
+  },
+  {
+   "top": 53499,
+   "bottom": 33507,
+   "topPath": "figurative/maurice-de-vlaminck_the-girl-from-rat-mort-1906.jpg",
+   "bottomPath": "figurative/bernardo-bellotto_the-kreuzkirche-in-dresden.jpg",
+   "y": 0,
+   "ms": 11729,
+   "rnd": false
+  },
+  {
+   "top": 50511,
+   "bottom": 45327,
+   "topPath": "figurative/lavinia-fontana_portrait-of-five-women-with-a-dog-and-a-parrot.jpg",
+   "bottomPath": "figurative/jacek-malczewski_a-woman-in-a-grove-1917.jpg",
+   "y": 0,
+   "ms": 5760,
+   "rnd": true
+  },
+  {
+   "top": 30327,
+   "bottom": 40104,
+   "topPath": "figurative/albrecht-durer_nude-1493.jpg",
+   "bottomPath": "abstract/gene-davis_lemon-ice-1965.jpg",
+   "y": 1,
+   "ms": 2577,
+   "rnd": false
+  },
+  {
+   "top": 54486,
+   "bottom": 36339,
+   "topPath": "abstract/morris-louis_dalet-chet-1958.jpg",
+   "bottomPath": "figurative/dmitry-levitzky_portrait-of-catherine-pavlovna.jpg",
+   "y": 0,
+   "ms": 8144,
+   "rnd": true
+  },
+  {
+   "top": 49392,
+   "bottom": 39690,
+   "topPath": "figurative/juan-gris_the-bull-fighter-1913.jpg",
+   "bottomPath": "figurative/fred-yates_river-landscape.jpg",
+   "y": 1,
+   "ms": 12186,
+   "rnd": false
+  },
+  {
+   "top": 48438,
+   "bottom": 54750,
+   "topPath": "figurative/john-miller_beach-goa.jpg",
+   "bottomPath": "figurative/mstislav-dobuzhinsky_a-cottage-in-st-petersburg-1905.jpg",
+   "y": 0,
+   "ms": 2697,
+   "rnd": true
+  },
+  {
+   "top": 58056,
+   "bottom": 38679,
+   "topPath": "figurative/paul-signac_antibes-evening-1914.jpg",
+   "bottomPath": "figurative/fernando-botero_the-president.jpg",
+   "y": 1,
+   "ms": 3460,
+   "rnd": false
+  },
+  {
+   "top": 51690,
+   "bottom": 32766,
+   "topPath": "figurative/lucas-cranach-the-elder_the-princess-1526.jpg",
+   "bottomPath": "abstract/atsuko-tanaka_untitled-1961.jpg",
+   "y": 0,
+   "ms": 4601,
+   "rnd": true
+  },
+  {
+   "top": 38511,
+   "bottom": 828,
+   "topPath": "figurative/fernando-botero_lovers-2.jpg",
+   "bottomPath": "abstract/milton-resnick_untitled-1959.jpg",
+   "y": 0,
+   "ms": 3884,
+   "rnd": false
+  },
+  {
+   "top": 51510,
+   "bottom": 50523,
+   "topPath": "figurative/lucas-cranach-the-elder_katharina-luther-1526.jpg",
+   "bottomPath": "figurative/lavinia-fontana_self-portrait-at-the-clavichord-with-a-servant-1577.jpg",
+   "y": 0,
+   "ms": 6407,
+   "rnd": true
+  },
+  {
+   "top": 50124,
+   "bottom": 44268,
+   "topPath": "figurative/konstantin-makovsky_model-1.jpg",
+   "bottomPath": "figurative/hiro-yamagata_marriage-1986.jpg",
+   "y": 1,
+   "ms": 3469,
+   "rnd": false
+  },
+  {
+   "top": 46854,
+   "bottom": 33924,
+   "topPath": "figurative/jean-fouquet_simon-de-varie-kneeling-in-prayer.jpg",
+   "bottomPath": "abstract/bradley-walker-tomlin_number-9-in-praise-of-gertrude-stein-1950.jpg",
+   "y": 0,
+   "ms": 17116,
+   "rnd": true
+  },
+  {
+   "top": 3840,
+   "bottom": 39675,
+   "topPath": "abstract/agnes-martin_untitled-no-1-1981.jpg",
+   "bottomPath": "figurative/fred-yates_john.jpg",
+   "y": 0,
+   "ms": 2047,
+   "rnd": false
+  },
+  {
+   "top": 39414,
+   "bottom": 50982,
+   "topPath": "figurative/frans-snyders_still-life-of-game-and-shellfish.jpg",
+   "bottomPath": "figurative/lorenzo-lotto_portrait-of-a-young-man-1505.jpg",
+   "y": 0,
+   "ms": 10187,
+   "rnd": true
+  },
+  {
+   "top": 44583,
+   "bottom": 29649,
+   "topPath": "abstract/ian-davenport_poured-lines-yellow-2007.jpg",
+   "bottomPath": "figurative/adriaen-van-ostade_landscape.jpg",
+   "y": 1,
+   "ms": 8593,
+   "rnd": false
+  },
+  {
+   "top": 43065,
+   "bottom": 45993,
+   "topPath": "figurative/henri-de-toulouse-lautrec_nude-girl-1893.jpg",
+   "bottomPath": "figurative/james-tissot_type-of-beauty-portrait-of-mrs-kathleen-newton-in-a-red-dress-and-black-bonnet-1880.jpg",
+   "y": 1,
+   "ms": 4165,
+   "rnd": true
+  },
+  {
+   "top": 38562,
+   "bottom": 43395,
+   "topPath": "figurative/fernando-botero_official-portrait-of-the-military-junta.jpg",
+   "bottomPath": "figurative/henri-fantin-latour_roses-1885-1.jpg",
+   "y": 1,
+   "ms": 4367,
+   "rnd": false
+  },
+  {
+   "top": 33534,
+   "bottom": 46101,
+   "topPath": "figurative/bernardo-bellotto_the-schloss-hof-garden-side-1758.jpg",
+   "bottomPath": "figurative/jamie-wyeth_monhegan-bell-1978.jpg",
+   "y": 0,
+   "ms": 4870,
+   "rnd": true
+  },
+  {
+   "top": 30024,
+   "bottom": 33252,
+   "topPath": "figurative/albert-gleizes_composition-1928.jpg",
+   "bottomPath": "figurative/basuki-abdullah_reclining-nude.jpg",
+   "y": 1,
+   "ms": 4197,
+   "rnd": false
+  },
+  {
+   "top": 36474,
+   "bottom": 47802,
+   "topPath": "figurative/dosso-dossi_portrait-of-a-man-probably-cesare-borgia-1520.jpg",
+   "bottomPath": "figurative/johann-koler_eve-after-falling-into-sin-1883.jpg",
+   "y": 0,
+   "ms": 8174,
+   "rnd": true
+  },
+  {
+   "top": 37428,
+   "bottom": 44787,
+   "topPath": "abstract/ellsworth-kelly_untitled-1973.jpg",
+   "bottomPath": "figurative/ilya-mashkov_still-life-with-statuette.jpg",
+   "y": 0,
+   "ms": 3065,
+   "rnd": false
+  },
+  {
+   "top": 36834,
+   "bottom": 5547,
+   "topPath": "figurative/edward-hopper_american-landscape.jpg",
+   "bottomPath": "figurative/gustave-moreau_the-daughters-of-thespius-1853.jpg",
+   "y": 1,
+   "ms": 4150,
+   "rnd": true
+  },
+  {
+   "top": 4257,
+   "bottom": 42444,
+   "topPath": "abstract/robert-ryman_convert-1988.jpg",
+   "bottomPath": "figurative/hans-holbein-the-younger_sir-henry-guildford-1527.jpg",
+   "y": 0,
+   "ms": 1342,
+   "rnd": false
+  },
+  {
+   "top": 49074,
+   "bottom": 42036,
+   "topPath": "figurative/jozsef-rippl-ronai_aristide-maillol-1899.jpg",
+   "bottomPath": "abstract/hans-hofmann_black-diamond-1961.jpg",
+   "y": 1,
+   "ms": 6561,
+   "rnd": true
+  },
+  {
+   "top": 41535,
+   "bottom": 48471,
+   "topPath": "figurative/giovanni-boldini_wild-game-in-black.jpg",
+   "bottomPath": "figurative/john-miller_estuary-i.jpg",
+   "y": 1,
+   "ms": 2486,
+   "rnd": false
+  },
+  {
+   "top": 54864,
+   "bottom": 39567,
+   "topPath": "figurative/mstislav-dobuzhinsky_province-voronezh-1912.jpg",
+   "bottomPath": "figurative/franz-marc_fighting-forms-1914.jpg",
+   "y": 1,
+   "ms": 6688,
+   "rnd": true
+  },
+  {
+   "top": 51762,
+   "bottom": 5271,
+   "topPath": "figurative/lucian-freud_night-portrait-face-down-2000.jpg",
+   "bottomPath": "figurative/pyotr-konchalovsky_flowers-1934.jpg",
+   "y": 1,
+   "ms": 3267,
+   "rnd": false
+  },
+  {
+   "top": 44475,
+   "bottom": 30219,
+   "topPath": "figurative/howard-finster_florence-nightingale.jpg",
+   "bottomPath": "figurative/albrecht-durer_hans-the-elder-portrait-burgkmair.jpg",
+   "y": 1,
+   "ms": 13010,
+   "rnd": true
+  },
+  {
+   "top": 34809,
+   "bottom": 44925,
+   "topPath": "figurative/caspar-david-friedrich_bohemian-landscape-1.jpg",
+   "bottomPath": "figurative/ion-pacea_still-life.jpg",
+   "y": 0,
+   "ms": 2574,
+   "rnd": false
+  },
+  {
+   "top": 37890,
+   "bottom": 47148,
+   "topPath": "figurative/eugene-boudin_venice-1895-1.jpg",
+   "bottomPath": "abstract/jimmy-ernst_night-subway-1948.jpg",
+   "y": 1,
+   "ms": 6481,
+   "rnd": true
+  },
+  {
+   "top": 5169,
+   "bottom": 36846,
+   "topPath": "figurative/julius-leblanc-stewart_nude-in-an-interior-1914(1).jpg",
+   "bottomPath": "figurative/edward-hopper_cape-cod-afternoon.jpg",
+   "y": 1,
+   "ms": 8353,
+   "rnd": false
+  },
+  {
+   "top": 43857,
+   "bottom": 31857,
+   "topPath": "figurative/henri-matisse_the-blue-nude-souvenir-of-biskra-1907.jpg",
+   "bottomPath": "figurative/andy-warhol_mick-jagger-2.jpg",
+   "y": 0,
+   "ms": 9037,
+   "rnd": true
+  },
+  {
+   "top": 36048,
+   "bottom": 37773,
+   "topPath": "figurative/david-burliuk_bouquet-with-sunflowers-with-landscape.jpg",
+   "bottomPath": "abstract/esteban-vicente_faraway-1970.jpg",
+   "y": 0,
+   "ms": 4766,
+   "rnd": false
+  },
+  {
+   "top": 48669,
+   "bottom": 57669,
+   "topPath": "figurative/john-singer-sargent_still-life-with-daffodils-1890.jpg",
+   "bottomPath": "figurative/paul-gauguin_the-moment-of-truth-ii-1893.jpg",
+   "y": 0,
+   "ms": 3317,
+   "rnd": true
+  },
+  {
+   "top": 38688,
+   "bottom": 41901,
+   "topPath": "figurative/fernando-botero_the-sisters.jpg",
+   "bottomPath": "figurative/gustave-dore_a-canyon-1878.jpg",
+   "y": 0,
+   "ms": 3646,
+   "rnd": false
+  },
+  {
+   "top": 45495,
+   "bottom": 40746,
+   "topPath": "abstract/jack-tworkov_blue-note-1959.jpg",
+   "bottomPath": "figurative/georges-braque_still-life-with-glass-carafe-and-phillips-ace-1919.jpg",
+   "y": 0,
+   "ms": 5149,
+   "rnd": true
+  },
+  {
+   "top": 32445,
+   "bottom": 40035,
+   "topPath": "figurative/antonello-da-messina_portrait-of-a-man-2.jpg",
+   "bottomPath": "abstract/gene-davis_flamingo-1965.jpg",
+   "y": 1,
+   "ms": 3624,
+   "rnd": false
+  },
+  {
+   "top": 37380,
+   "bottom": 45615,
+   "topPath": "abstract/ellsworth-kelly_black-variation-iv-from-second-curve-series-1975.jpg",
+   "bottomPath": "abstract/jackson-pollock_mural-on-indian-red-ground-1950.jpg",
+   "y": 0,
+   "ms": 2240,
+   "rnd": true
+  },
+  {
+   "top": 44412,
+   "bottom": 43020,
+   "topPath": "figurative/hiro-yamagata_vacance-1980.jpg",
+   "bottomPath": "abstract/henk-peeters_untitled-3.jpg",
+   "y": 0,
+   "ms": 4191,
+   "rnd": false
+  },
+  {
+   "top": 39072,
+   "bottom": 54162,
+   "topPath": "abstract/frank-lobdell_black-edge-ii-1962.jpg",
+   "bottomPath": "figurative/mikhail-vrubel_sappho.jpg",
+   "y": 0,
+   "ms": 11577,
+   "rnd": true
+  },
+  {
+   "top": 54363,
+   "bottom": 39702,
+   "topPath": "figurative/moise-kisling_young-brunette-woman-in-headscarf.jpg",
+   "bottomPath": "figurative/frederic-edwin-church_aurora-borealis-1865.jpg",
+   "y": 0,
+   "ms": 15432,
+   "rnd": false
+  },
+  {
+   "top": 36444,
+   "bottom": 29697,
+   "topPath": "figurative/domenico-ghirlandaio_portrait-of-the-donor-francesca-pitti-tornabuoni-1490.jpg",
+   "bottomPath": "abstract/agnes-martin_untitled-1959.jpg",
+   "y": 1,
+   "ms": 4763,
+   "rnd": true
+  },
+  {
+   "top": 37278,
+   "bottom": 30828,
+   "topPath": "abstract/elaine-de-kooning_bull-matador-1960.jpg",
+   "bottomPath": "figurative/alexander-shilov_nude-1991(3).jpg",
+   "y": 1,
+   "ms": 3758,
+   "rnd": false
+  },
+  {
+   "top": 40257,
+   "bottom": 33627,
+   "topPath": "abstract/gene-davis_untitled-152-1971.jpg",
+   "bottomPath": "figurative/bernhard-strigel_portrait-of-a-gentleman.jpg",
+   "y": 0,
+   "ms": 3758,
+   "rnd": true
+  },
+  {
+   "top": 32424,
+   "bottom": 44307,
+   "topPath": "figurative/anton-azbe_study-of-a-man-1886.jpg",
+   "bottomPath": "figurative/hiro-yamagata_not-detected-272399.jpg",
+   "y": 1,
+   "ms": 6913,
+   "rnd": false
+  },
+  {
+   "top": 1275,
+   "bottom": 43566,
+   "topPath": "abstract/sam-francis_untitled-s-f-e-363-1994.jpg",
+   "bottomPath": "figurative/henri-martin_my-house.jpg",
+   "y": 1,
+   "ms": 4644,
+   "rnd": true
+  },
+  {
+   "top": 81,
+   "bottom": 53685,
+   "topPath": "abstract/betty-parsons_the-moth-1969.jpg",
+   "bottomPath": "figurative/maurice-quentin-de-la-tour_marc-ren-marquis-de-voyer-d-argenson-lieutenant-general-of-the-king-s-armies-inspector-general.jpg",
+   "y": 0,
+   "ms": 3807,
+   "rnd": false
+  },
+  {
+   "top": 57300,
+   "bottom": 55506,
+   "topPath": "figurative/patrick-procktor_hrh-prince-charles-b-1948-1987.jpg",
+   "bottomPath": "figurative/nicholas-roerich_river-chandra-1931.jpg",
+   "y": 1,
+   "ms": 3728,
+   "rnd": true
+  },
+  {
+   "top": 50949,
+   "bottom": 43257,
+   "topPath": "figurative/lorenzo-lotto_portrait-of-a-gentleman-with-gloves.jpg",
+   "bottomPath": "figurative/henri-edmond-cross_the-wood-1907.jpg",
+   "y": 0,
+   "ms": 3760,
+   "rnd": false
+  },
+  {
+   "top": 43140,
+   "bottom": 43713,
+   "topPath": "figurative/henri-edmond-cross_cypress-april.jpg",
+   "bottomPath": "figurative/henri-matisse_laurette-with-long-locks.jpg",
+   "y": 0,
+   "ms": 3268,
+   "rnd": true
+  },
+  {
+   "top": 40950,
+   "bottom": 35556,
+   "topPath": "figurative/georges-ribemont-dessaignes_paysage-du-midi-1905.jpg",
+   "bottomPath": "figurative/cornelis-norbertus-gysbrechts_silverware-in-an-open-cabinet.jpg",
+   "y": 1,
+   "ms": 3364,
+   "rnd": false
+  },
+  {
+   "top": 3990,
+   "bottom": 30705,
+   "topPath": "abstract/frederick-hammersley_again-is-a-gain-6-1971.jpg",
+   "bottomPath": "figurative/albrecht-durer_young-man-1507.jpg",
+   "y": 1,
+   "ms": 8664,
+   "rnd": true
+  },
+  {
+   "top": 48798,
+   "bottom": 41880,
+   "topPath": "figurative/josefa-de-obidos_natureza-morta-com-frutos-e-flores-1670.jpg",
+   "bottomPath": "figurative/gustave-courbet_the-origin-of-the-world-1866.jpg",
+   "y": 0,
+   "ms": 4498,
+   "rnd": false
+  },
+  {
+   "top": 2820,
+   "bottom": 54522,
+   "topPath": "figurative/dimitris-mytaras_boats-in-halkida.jpg",
+   "bottomPath": "abstract/morris-louis_gamma-delta-1960.jpg",
+   "y": 1,
+   "ms": 5182,
+   "rnd": true
+  },
+  {
+   "top": 35763,
+   "bottom": 45129,
+   "topPath": "abstract/cy-twombly_summer-madness.jpg",
+   "bottomPath": "figurative/ivan-aivazovsky_seascape.jpg",
+   "y": 0,
+   "ms": 4584,
+   "rnd": false
+  },
+  {
+   "top": 34998,
+   "bottom": 5130,
+   "topPath": "figurative/childe-hassam_mount-hood-and-the-valley-of-the-willamette.jpg",
+   "bottomPath": "figurative/ivan-shishkin_city-roofs-in-winter.jpg",
+   "y": 1,
+   "ms": 4178,
+   "rnd": true
+  },
+  {
+   "top": 31368,
+   "bottom": 1449,
+   "topPath": "figurative/anders-zorn_the-tub-1888.jpg",
+   "bottomPath": "abstract/franz-kline_buttress-1956.jpg",
+   "y": 0,
+   "ms": 4504,
+   "rnd": false
+  },
+  {
+   "top": 38868,
+   "bottom": 2016,
+   "topPath": "figurative/francis-picabia_new-york-as-seen-from-across-the-body.jpg",
+   "bottomPath": "abstract/brice-marden_rodeo-1971.jpg",
+   "y": 1,
+   "ms": 2376,
+   "rnd": true
+  },
+  {
+   "top": 34179,
+   "bottom": 31071,
+   "topPath": "abstract/brice-marden_untitled-1971.jpg",
+   "bottomPath": "figurative/allan-ramsay_portrait-of-archibald-campbell-3rd-duke-of-argyll-1.jpg",
+   "y": 0,
+   "ms": 2321,
+   "rnd": false
+  },
+  {
+   "top": 753,
+   "bottom": 3810,
+   "topPath": "abstract/manabu-mabe_alvorada-da-industria-1966.jpg",
+   "bottomPath": "abstract/agnes-martin_untitled-1977-3.jpg",
+   "y": 1,
+   "ms": 3575,
+   "rnd": true
+  },
+  {
+   "top": 33513,
+   "bottom": 32685,
+   "topPath": "figurative/bernardo-bellotto_the-moat-of-the-zwinger-in-dresden.jpg",
+   "bottomPath": "abstract/arthur-pinajian_untitled-landscape-bellport-no-256-1990.jpg",
+   "y": 0,
+   "ms": 6751,
+   "rnd": false
+  },
+  {
+   "top": 43368,
+   "bottom": 53406,
+   "topPath": "figurative/henri-fantin-latour_pansies-1879.jpg",
+   "bottomPath": "figurative/mary-fedden_untitled-1975.jpg",
+   "y": 0,
+   "ms": 4063,
+   "rnd": true
+  },
+  {
+   "top": 48507,
+   "bottom": 38469,
+   "topPath": "figurative/john-miller_moonoverthebay.jpg",
+   "bottomPath": "figurative/fernando-botero_family.jpg",
+   "y": 0,
+   "ms": 3038,
+   "rnd": false
+  },
+  {
+   "top": 55626,
+   "bottom": 1044,
+   "topPath": "figurative/nicholas-roerich_untitled-1908.jpg",
+   "bottomPath": "abstract/richard-pousette-dart_moon-meditation-1960.jpg",
+   "y": 1,
+   "ms": 2125,
+   "rnd": true
+  },
+  {
+   "top": 53007,
+   "bottom": 43419,
+   "topPath": "abstract/martial-raysse_untitled.jpg",
+   "bottomPath": "figurative/henri-fantin-latour_roses-in-a-vase-1888.jpg",
+   "y": 1,
+   "ms": 4057,
+   "rnd": false
+  },
+  {
+   "top": 43047,
+   "bottom": 48201,
+   "topPath": "figurative/henri-de-toulouse-lautrec_dr-tapie-celeyran-in-a-corridor-of-the-french-comedy-1894.jpg",
+   "bottomPath": "abstract/john-hoyland_21-1-75-1975.jpg",
+   "y": 1,
+   "ms": 6271,
+   "rnd": true
+  },
+  {
+   "top": 49188,
+   "bottom": 37920,
+   "topPath": "figurative/juan-gris_guitar-and-fruit-dish-1.jpg",
+   "bottomPath": "figurative/eugene-delacroix_study-of-a-reclining-nude-1824(1).jpg",
+   "y": 0,
+   "ms": 10874,
+   "rnd": false
+  },
+  {
+   "top": 261,
+   "bottom": 39981,
+   "topPath": "abstract/frank-stella_salta-nel-mio-sacco-1984.jpg",
+   "bottomPath": "abstract/gene-davis_butterfly-1972.jpg",
+   "y": 1,
+   "ms": 2746,
+   "rnd": true
+  },
+  {
+   "top": 36096,
+   "bottom": 49431,
+   "topPath": "figurative/david-burliuk_reclining-nude-in-a-landscape(1).jpg",
+   "bottomPath": "figurative/juan-gris_the-sideboard-1917.jpg",
+   "y": 1,
+   "ms": 4181,
+   "rnd": false
+  },
+  {
+   "top": 37053,
+   "bottom": 29604,
+   "topPath": "figurative/edward-ruscha_standard-study-3-1963.jpg",
+   "bottomPath": "figurative/adriaen-van-de-velde_harteveld-house-on-the-vecht-in-utrecht.jpg",
+   "y": 0,
+   "ms": 3370,
+   "rnd": true
+  },
+  {
+   "top": 51939,
+   "bottom": 57387,
+   "topPath": "figurative/mabuse_portrait-of-chancellor-jean-carondelet-1517.jpg",
+   "bottomPath": "figurative/paul-cezanne_dark-blue-vase-1880.jpg",
+   "y": 1,
+   "ms": 2443,
+   "rnd": false
+  },
+  {
+   "top": 528,
+   "bottom": 57366,
+   "topPath": "abstract/jimmy-ernst_animals-and-minerals-1952.jpg",
+   "bottomPath": "figurative/paul-cezanne_apples-pears-and-grapes.jpg",
+   "y": 1,
+   "ms": 5134,
+   "rnd": true
+  },
+  {
+   "top": 48030,
+   "bottom": 35472,
+   "topPath": "figurative/john-french-sloan_fishing-port-gloucester-1916.jpg",
+   "bottomPath": "abstract/conrad-marca-relli_untitled-1976.jpg",
+   "y": 0,
+   "ms": 4788,
+   "rnd": false
+  },
+  {
+   "top": 52704,
+   "bottom": 6,
+   "topPath": "abstract/mark-rothko_untitled-1967.jpg",
+   "bottomPath": "abstract/aaron-siskind_new-york-24-1988.jpg",
+   "y": 0,
+   "ms": 2416,
+   "rnd": true
+  },
+  {
+   "top": 303,
+   "bottom": 38163,
+   "topPath": "abstract/gerhard-richter_abstract-painting-610-1.jpg",
+   "bottomPath": "figurative/felix-vallotton_reclining-nude-on-a-couch.jpg",
+   "y": 0,
+   "ms": 5576,
+   "rnd": false
+  },
+  {
+   "top": 30021,
+   "bottom": 35433,
+   "topPath": "figurative/albert-bloch_winter-in-the-dead-wood-1938.jpg",
+   "bottomPath": "abstract/conrad-marca-relli_taos-2-1961.jpg",
+   "y": 1,
+   "ms": 2114,
+   "rnd": true
+  },
+  {
+   "top": 5736,
+   "bottom": 55761,
+   "topPath": "figurative/william-turner_undine-giving-the-ring-to-massaniello-fisherman-of-naples.jpg",
+   "bottomPath": "figurative/niko-pirosmani_fisherman-among-rocks-1906.jpg",
+   "y": 1,
+   "ms": 2674,
+   "rnd": false
+  },
+  {
+   "top": 31275,
+   "bottom": 47385,
+   "topPath": "figurative/amedeo-modigliani_portrait-of-a-woman-1915.jpg",
+   "bottomPath": "figurative/joan-miro_house-with-palm-tree.jpg",
+   "y": 1,
+   "ms": 3011,
+   "rnd": true
+  },
+  {
+   "top": 50928,
+   "bottom": 32559,
+   "topPath": "figurative/lorenzo-lotto_bust-of-a-bearded-man-1541.jpg",
+   "bottomPath": "figurative/armand-guillaumin_paysage-de-la-creuse-printemps.jpg",
+   "y": 1,
+   "ms": 4729,
+   "rnd": false
+  },
+  {
+   "top": 3264,
+   "bottom": 44094,
+   "topPath": "figurative/claude-monet_vetheuil-4.jpg",
+   "bottomPath": "figurative/henri-rousseau_the-quarry.jpg",
+   "y": 0,
+   "ms": 7354,
+   "rnd": true
+  },
+  {
+   "top": 49320,
+   "bottom": 53436,
+   "topPath": "figurative/juan-gris_still-life-on-plaque-1917.jpg",
+   "bottomPath": "figurative/maurice-de-vlaminck_chatou-1.jpg",
+   "y": 1,
+   "ms": 10574,
+   "rnd": false
+  },
+  {
+   "top": 1539,
+   "bottom": 53214,
+   "topPath": "figurative/egon-schiele_the-small-city-dead-city-1912.jpg",
+   "bottomPath": "figurative/martiros-saryan_still-life-fruits-1911.jpg",
+   "y": 0,
+   "ms": 20350,
+   "rnd": true
+  },
+  {
+   "top": 3087,
+   "bottom": 48561,
+   "topPath": "figurative/ilya-mashkov_still-life-roses.jpg",
+   "bottomPath": "figurative/john-miller_tropical-beach.jpg",
+   "y": 1,
+   "ms": 1503,
+   "rnd": false
+  },
+  {
+   "top": 37068,
+   "bottom": 34458,
+   "topPath": "figurative/egon-schiele_dead-city-city-on-the-blue-river-1911.jpg",
+   "bottomPath": "figurative/camille-pissarro_pear-trees-and-flowers-at-eragny-morning-1886.jpg",
+   "y": 1,
+   "ms": 2426,
+   "rnd": true
+  },
+  {
+   "top": 48369,
+   "bottom": 56049,
+   "topPath": "abstract/john-mclaughlin_number-6.jpg",
+   "bottomPath": "figurative/odilon-redon_geranium.jpg",
+   "y": 0,
+   "ms": 3765,
+   "rnd": false
+  },
+  {
+   "top": 57642,
+   "bottom": 33405,
+   "topPath": "figurative/paul-gauguin_meadow-in-martinique-1887.jpg",
+   "bottomPath": "figurative/bernardo-bellotto_cracow-suburb-seen-from-the-cracow-gate.jpg",
+   "y": 0,
+   "ms": 6065,
+   "rnd": true
+  },
+  {
+   "top": 3180,
+   "bottom": 51351,
+   "topPath": "figurative/childe-hassam_the-harbor-of-a-thousand-masts-gloucester.jpg",
+   "bottomPath": "figurative/louise-elisabeth-vigee-le-brun_the-bather-1792.jpg",
+   "y": 1,
+   "ms": 10754,
+   "rnd": false
+  },
+  {
+   "top": 1971,
+   "bottom": 44859,
+   "topPath": "abstract/anne-appleby_verona-variation-7-2003.jpg",
+   "bottomPath": "figurative/ilya-repin_portrait-of-yuriy-repin-the-artist-s-son-1882.jpg",
+   "y": 0,
+   "ms": 2812,
+   "rnd": true
+  },
+  {
+   "top": 44226,
+   "bottom": 43482,
+   "topPath": "figurative/hiro-yamagata_castle-festival-1989.jpg",
+   "bottomPath": "figurative/henri-fantin-latour_vase-of-roses-1872.jpg",
+   "y": 0,
+   "ms": 4467,
+   "rnd": false
+  },
+  {
+   "top": 36831,
+   "bottom": 32418,
+   "topPath": "figurative/edward-hopper_adobes-and-shed-new-mexico.jpg",
+   "bottomPath": "figurative/anton-azbe_sitting-old-man-nude-1905.jpg",
+   "y": 0,
+   "ms": 3997,
+   "rnd": true
+  },
+  {
+   "top": 46992,
+   "bottom": 4266,
+   "topPath": "figurative/jean-metzinger_landscape-couch-e-de-soleil-no-1-1906.jpg",
+   "bottomPath": "abstract/robert-ryman_first-conversion-2003.jpg",
+   "y": 0,
+   "ms": 6218,
+   "rnd": false
+  },
+  {
+   "top": 5967,
+   "bottom": 42387,
+   "topPath": "figurative/pablo-picasso_glass-and-bottle-of-straw-rum-1914.jpg",
+   "bottomPath": "figurative/hans-holbein-the-younger_portrait-of-henry-viii.jpg",
+   "y": 0,
+   "ms": 6633,
+   "rnd": true
+  },
+  {
+   "top": 51018,
+   "bottom": 31365,
+   "topPath": "figurative/louay-kayyali_maaloula-1963.jpg",
+   "bottomPath": "figurative/anders-zorn_the-bedroom.jpg",
+   "y": 1,
+   "ms": 6384,
+   "rnd": false
+  }
+ ],
+ "test": [
+  {
+   "top": 49701,
+   "bottom": 48774,
+   "topPath": "figurative/karoly-ferenczy_painter-and-model-1904.jpg",
+   "bottomPath": "abstract/jose-guerrero_untitled-1985-2.jpg",
+   "choice": 0,
+   "pred": 0,
+   "conf": 0.847,
+   "cons": 0,
+   "ms": 2622
+  },
+  {
+   "top": 47280,
+   "bottom": 40149,
+   "topPath": "abstract/joan-hernandez-pijuan_coms-flors-verdes-sobre-negre-2-1996.jpg",
+   "bottomPath": "abstract/gene-davis_peach-glow-1958.jpg",
+   "choice": 0,
+   "pred": 0,
+   "conf": 0.801,
+   "cons": 0,
+   "ms": 1536
+  },
+  {
+   "top": 51225,
+   "bottom": 45150,
+   "topPath": "figurative/louis-vivin_le-ch-teau-de-saint-germain.jpg",
+   "bottomPath": "figurative/ivan-aivazovsky_the-bay-of-naples-early-in-the-morning-1897.jpg",
+   "choice": 1,
+   "pred": 1,
+   "conf": 0.592,
+   "cons": 1,
+   "ms": 4591
+  },
+  {
+   "top": 38226,
+   "bottom": 37179,
+   "topPath": "figurative/ferdinand-hodler_the-dents-du-midi-from-chesieres-1912.jpg",
+   "bottomPath": "figurative/el-greco_julian-romero-de-las-azanas-and-his-patron-st-julian.jpg",
+   "choice": 0,
+   "pred": 0,
+   "conf": 0.59,
+   "cons": 1,
+   "ms": 3910
+  },
+  {
+   "top": 2697,
+   "bottom": 38229,
+   "topPath": "abstract/william-scott_orange-black-and-white-composition-1953.jpg",
+   "bottomPath": "figurative/ferdinand-hodler_the-fall-in-silvaplana-1907.jpg",
+   "choice": 0,
+   "pred": 1,
+   "conf": 0.534,
+   "cons": 1,
+   "ms": 4464
+  },
+  {
+   "top": 3111,
+   "bottom": 29892,
+   "topPath": "figurative/max-pechstein_the-big-indian-1910.jpg",
+   "bottomPath": "figurative/agostino-carracci_julie-with-an-athlete.jpg",
+   "choice": 0,
+   "pred": 1,
+   "conf": 0.705,
+   "cons": 1,
+   "ms": 9862
+  },
+  {
+   "top": 1623,
+   "bottom": 363,
+   "topPath": "figurative/gustav-klimt_water-castle.jpg",
+   "bottomPath": "abstract/hans-hofmann_summer-night-s-bliss-1961.jpg",
+   "choice": 1,
+   "pred": 1,
+   "conf": 0.809,
+   "cons": 0,
+   "ms": 5097
+  },
+  {
+   "top": 41988,
+   "bottom": 32178,
+   "topPath": "figurative/hans-baldung_hans-baldung-grien-and-john-rudalfinger-1534.jpg",
+   "bottomPath": "abstract/anne-appleby_sweet-pine-1997.jpg",
+   "choice": 0,
+   "pred": 0,
+   "conf": 0.898,
+   "cons": 0,
+   "ms": 1673
+  },
+  {
+   "top": 49791,
+   "bottom": 53625,
+   "topPath": "figurative/kazimir-malevich_gardener-1911.jpg",
+   "bottomPath": "figurative/maurice-prendergast_village-against-purple-mountain.jpg",
+   "choice": 0,
+   "pred": 0,
+   "conf": 0.526,
+   "cons": 1,
+   "ms": 2123
+  },
+  {
+   "top": 44256,
+   "bottom": 41265,
+   "topPath": "figurative/hiro-yamagata_four-cities-suite-1986.jpg",
+   "bottomPath": "abstract/geta-bratescu_the-rule-of-the-circle-the-rule-of-the-game-1985(7).jpg",
+   "choice": 1,
+   "pred": 1,
+   "conf": 0.578,
+   "cons": 0,
+   "ms": 1604
+  },
+  {
+   "top": 29721,
+   "bottom": 32772,
+   "topPath": "figurative/agnolo-bronzino_eleonora-da-toledo-1543.jpg",
+   "bottomPath": "abstract/atsuko-tanaka_untitled-1964.jpg",
+   "choice": 0,
+   "pred": 1,
+   "conf": 0.672,
+   "cons": 0,
+   "ms": 4646
+  },
+  {
+   "top": 40689,
+   "bottom": 50718,
+   "topPath": "figurative/georges-braque_night-1951.jpg",
+   "bottomPath": "abstract/leon-berkowitz_cathedral-5-1966.jpg",
+   "choice": 0,
+   "pred": 0,
+   "conf": 0.974,
+   "cons": 0,
+   "ms": 1173
+  },
+  {
+   "top": 52341,
+   "bottom": 54828,
+   "topPath": "figurative/maria-primachenko_lovely-spring-what-did-you-bring-1977.jpg",
+   "bottomPath": "figurative/mstislav-dobuzhinsky_lions-bridge-1923.jpg",
+   "choice": 1,
+   "pred": 1,
+   "conf": 0.827,
+   "cons": 1,
+   "ms": 1094
+  },
+  {
+   "top": 44283,
+   "bottom": 4071,
+   "topPath": "figurative/hiro-yamagata_normandies-1979.jpg",
+   "bottomPath": "abstract/joan-hernandez-pijuan_limite-2000.jpg",
+   "choice": 1,
+   "pred": 1,
+   "conf": 0.58,
+   "cons": 0,
+   "ms": 2154
+  },
+  {
+   "top": 2673,
+   "bottom": 51789,
+   "topPath": "abstract/walter-darby-bannard_cherokee-blanket-1964.jpg",
+   "bottomPath": "figurative/lucian-grigorescu_vedere-c-tre-biserica-sf-spiridon-1940.jpg",
+   "choice": 1,
+   "pred": 1,
+   "conf": 0.88,
+   "cons": 1,
+   "ms": 1886
+  },
+  {
+   "top": 51723,
+   "bottom": 33735,
+   "topPath": "figurative/lucian-freud_garden-in-winter.jpg",
+   "bottomPath": "figurative/billy-apple_the-man-in-the-hathaway-suit-1-4-1964.jpg",
+   "choice": 0,
+   "pred": 0,
+   "conf": 0.665,
+   "cons": 1,
+   "ms": 1344
+  },
+  {
+   "top": 44790,
+   "bottom": 44919,
+   "topPath": "figurative/ilya-mashkov_still-life-with-vegetables-1914.jpg",
+   "bottomPath": "figurative/ion-pacea_still-life-with-pomegranates.jpg",
+   "choice": 1,
+   "pred": 1,
+   "conf": 0.555,
+   "cons": 0,
+   "ms": 1761
+  },
+  {
+   "top": 53937,
+   "bottom": 31359,
+   "topPath": "abstract/michel-carrade_unknown-title-10.jpg",
+   "bottomPath": "figurative/anders-zorn_red-stockings-1887.jpg",
+   "choice": 1,
+   "pred": 1,
+   "conf": 0.895,
+   "cons": 1,
+   "ms": 1279
+  },
+  {
+   "top": 38637,
+   "bottom": 42261,
+   "topPath": "figurative/fernando-botero_still-life-with-watermelon.jpg",
+   "bottomPath": "figurative/hans-holbein-the-younger_dorothea-kannengiesser-1516.jpg",
+   "choice": 1,
+   "pred": 0,
+   "conf": 0.506,
+   "cons": 0,
+   "ms": 2035
+  },
+  {
+   "top": 56238,
+   "bottom": 48675,
+   "topPath": "abstract/olivier-debre_red-xian-1990.jpg",
+   "bottomPath": "figurative/john-singer-sargent_vase-fountain-pocantico-1917.jpg",
+   "choice": 0,
+   "pred": 0,
+   "conf": 0.642,
+   "cons": 1,
+   "ms": 3149
+  }
+ ],
+ "z": [
+  0.5437,
+  0.02848,
+  0.1545,
+  0.01776,
+  -0.07917,
+  0.11201,
+  0.0446,
+  0.07259,
+  -0.1699
+ ],
+ "sideBias": -0.0903,
+ "hits": 16,
+ "topRate": 0.492
+}
