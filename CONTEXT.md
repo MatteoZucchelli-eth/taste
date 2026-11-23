@@ -284,6 +284,28 @@ cd ../.. && docker compose run --rm taste python -c "from huggingface_hub import
 Paper PDFs are not in git: run `bash papers/download.sh` to fetch them all.
 Keep analysis scripts outside `data/` (e.g. in `src/`), and pass data paths as arguments.
 
+## 7b. "This or That" web app (2026-11-23) — `app/`, export `src/app_export.py`
+
+iPhone-first static web app: 25 picks (5 random + 20 infogain) fit a new person's z (9 numbers) on the frozen Phase C model
+(fold 0, K=8, z-only, tau=0.5 = validation choice at 25 pairs), then 10 random pairs where the frozen model's guess is fixed
+before the pair is shown, then a reveal with "model score for you" and "crowd" percentiles. Results: score, crowd-model baseline
+on the same pairs, top-3 taste traits with example images, model picks, share card (PNG via Web Share API) and a challenge
+link (`#c=` carries name, score and z → friend sees "taste match %" = correlation of the personal score parts).
+- User decisions: all 11,723 LAPIS images; no skip button; 10 random test pairs; model frozen during the test; shareable result;
+  local first, Vercel later; data storage later (sessions are kept in localStorage for now, `saveSession()` is the hook).
+- Presentation (from the literature check): position effects in simultaneous choice are real but inconsistent (Bar-Hillel 2015);
+  swipe direction has a valence association (rightward = positive in app conventions) → **tap to choose**, images **stacked**
+  in portrait (full width each; side by side in landscape), sides randomised every pair, a per-person side-bias term b in the
+  fit (prior sd 0.5) so side preference cannot leak into z, both images appear only when both are decoded, taps < 450 ms ignored.
+- Axis pole names (read from top/bottom images): 0 crowd-pleaser/against the grain, 1 vivid sensual painting/quiet minimalism,
+  2 raw gestural/polished detail, 3 old-master portraits/the human body, 4 open landscapes/intimate figures, 5 baroque drama/clean
+  colour fields, 6 busy geometry/near-empty canvases, 7 playful naive figures/explosive abstraction, 8 lush florals/stark B&W.
+- 873 images flagged as nudity from the captions: never on the share card; `?sfw=1` removes them from the pool.
+- Checks: JS MAP fit = Python `fit_users` to 6e-7; simulated users from the population prior: infogain 0.857 / random 0.823 /
+  consensus 0.745 agreement with the true preference; full flow tested in WebKit (iPhone 15 emulation), light/dark, landscape.
+- Run: `python3 app/serve.py` → open `http://<LAN IP>:8000` on the phone (same Wi-Fi). Re-export: `docker compose run --rm taste
+  python src/app_export.py`. Vercel plan: app as static files; images in Vercel Blob (set `imgBase` in `app/config.js`).
+
 ## 8. Working preferences of the user
 - Decisions are made step by step. Verify before training. Do not start step 2 (RL/generator) unless asked.
 - Science-backed choices only, from the best papers. Keep the reading list small and update `papers/INDEX.md` when it changes.
