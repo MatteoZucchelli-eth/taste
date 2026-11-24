@@ -12,3 +12,5 @@ peft==0.22.0
 accelerate==1.16.0
 # design-transfer test (Crello parquet)
 pyarrow==26.0.1
+# text Phase A (LiteraryTaste): sentiment lexicon
+vaderSentiment==3.3.2

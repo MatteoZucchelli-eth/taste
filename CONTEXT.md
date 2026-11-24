@@ -84,7 +84,7 @@ Code `src/rl_*.py`, outputs `outputs/rl/`, literature `papers/INDEX.md` §6. Why
 Side check: the user's LAPIS-trained critic transfers to other images (`src/design_transfer.py`, 100 locked pairs each): Crello designs
 personal 58% / crowd 48% (SigLIP personal 61%, p=0.02); products 63% / 54% (p=0.006).
 
-## 7. Broadening beyond LAPIS: plan (user decisions, 2026-11-24; nothing run yet)
+## 7. Broadening beyond LAPIS (user decisions, 2026-11-24)
 
 Same taste mechanism over a broader space: images **and** English texts, later one taste vector over both. Each new dataset must first
 pass a Phase A replication.
@@ -98,8 +98,22 @@ pass a Phase A replication.
 - Everything becomes **within-rater pairs** (ties dropped).
 - Test features **as in Phase A** (metadata only). For text: **hand-built text stats** (length, readability, lexical diversity,
   rhyme/meter, sentiment, topic tags) + dataset labels.
-- Gate: **Phase A pipeline**. Fix the pass threshold (share of raters significant at gain ≥2 pts) **before** running.
+- Gate: **Phase A pipeline**. **Pre-registered pass rule (2026-11-24): ≥50% of raters significant at BH-FDR 5% AND median held-out
+  gain ≥2 pts.** PAMELA features: one-hot group/style/type + simple pixel stats we compute (no neural models).
 - Cross-modal link: **collect in the app**: text-vs-text pairs **interleaved** with image pairs (never image vs text), same players.
+
+**Results**
+- **PAMELA: PASS** (`src/phase_a_pamela.py` → `outputs/phase_a_pamela/`, pixel stats cached in `data/pamela/image_stats.csv`).
+  174/198 raters (88%) sig at FDR 5%; median held-out gain **+2.05 pts** (just over the bar; LAPIS +2.7). Consensus reliability 0.80.
+  Pseudo-raters 0% sig; synthetic no-taste 0%. The test is conservative here (planted 6-pt taste found in only 18% of synthetic raters,
+  ~200 ratings/rater). Significance rises with n (≤100 ratings: 60%; >400: 100%).
+- **LiteraryTaste (text): FAIL the gate** (`src/phase_a_text.py` → `outputs/phase_a_text/`; data `data/literarytaste/`, from GitHub
+  mj-storytelling/LiteraryTaste, no license file). 20 sets × 3 raters × 100 pairs, each text in one pair only; consensus = the other 2
+  votes; g cross-fitted by set; 30 hand-built text features (VADER sentiment added to requirements); λ=300 chosen on synthetic raters.
+  13/60 raters (22%) sig, median gain +0.7 pts. But pooled Stouffer z **8.7** (synthetic null −1.5): taste exists, too weak per person to
+  show with ~96 answers (synthetic: a planted 1 logit/SD taste is found in 20% of raters, 2 logit/SD in 78%; real ≈ the 1-logit case).
+  Text taste is far less consensual than images: agreement with the other 2 raters median 0.58 (LAPIS 0.67); all 3 agree on 38% of pairs.
+  "Mixture" pseudo-raters are not a clean null with 3-rater sets (always the same 2 people; z 2.4).
 
 ## 8. Environment
 

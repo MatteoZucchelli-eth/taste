@@ -1,0 +1,126 @@
+ Container taste-taste-run-e39575c0969a Creating 
+ Container taste-taste-run-e39575c0969a Created 
+  pixel stats 1000/5077 [14s]
+  pixel stats 2000/5077 [27s]
+  pixel stats 3000/5077 [41s]
+  pixel stats 4000/5077 [54s]
+  pixel stats 5000/5077 [68s]
+loaded 69904 ratings, 199 raters, 82 features, consensus reliability 0.798 [69s]
+real raters done [78s]
+/workspace/src/phase_a_pamela.py:221: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+  T = R[tested]
+   delta  frac_p05  frac_bh  mean_gain
+0      0      0.04     0.00     -0.325
+1      3      0.10     0.00     -0.216
+2      6      0.35     0.18      0.037
+3     10      0.64     0.64      0.504
+pseudo: {'n': 150, 'frac_sig_fdr05': 0.0, 'frac_p05': 0.08, 'gain_median': -0.33908734344215236}
+{
+ "verdict": {
+  "rule": ">=50% of tested raters sig at BH-FDR 5% AND median held-out gain >=2 pts",
+  "frac_sig": 0.8787878787878788,
+  "gain_median": 2.049048024526993,
+  "passed": true
+ },
+ "n_ratings": 69904,
+ "n_raters": 199,
+ "n_tested": 198,
+ "n_features": 82,
+ "n_per_tested_rater_median": 200.0,
+ "params": {
+  "lam": 1000.0,
+  "splits": 20,
+  "perms": 1000,
+  "min_n": 40,
+  "seed": 0
+ },
+ "consensus_reliability_full_panel": 0.7975856304823556,
+ "acc_cons_median": 0.6655978011910215,
+ "n_sig_fdr05": 174,
+ "frac_p05_uncorrected": 0.8787878787878788,
+ "gain_median_sig": 2.3688423210528717,
+ "gain_vs_cons_only_median": 2.419101316751271,
+ "threshold_curve": [
+  {
+   "min_gain_pts": 0.0,
+   "n_raters": 173
+  },
+  {
+   "min_gain_pts": 0.5,
+   "n_raters": 164
+  },
+  {
+   "min_gain_pts": 1.0,
+   "n_raters": 137
+  },
+  {
+   "min_gain_pts": 2.0,
+   "n_raters": 100
+  },
+  {
+   "min_gain_pts": 3.0,
+   "n_raters": 68
+  },
+  {
+   "min_gain_pts": 5.0,
+   "n_raters": 28
+  }
+ ],
+ "frac_sig_by_n": [
+  {
+   "n": "(0, 100]",
+   "mean": 0.6,
+   "size": 40
+  },
+  {
+   "n": "(100, 200]",
+   "mean": 0.9230769230769231,
+   "size": 65
+  },
+  {
+   "n": "(200, 400]",
+   "mean": 0.9166666666666666,
+   "size": 36
+  },
+  {
+   "n": "(400, 2000]",
+   "mean": 1.0,
+   "size": 57
+  }
+ ],
+ "corr_n_taste_z": 0.6772755277652109,
+ "corr_acc_cons_taste_z": -0.0781209539467836,
+ "self_test": [
+  {
+   "delta": 0,
+   "frac_p05": 0.04,
+   "frac_bh": 0.0,
+   "mean_gain": -0.3254334045940025
+  },
+  {
+   "delta": 3,
+   "frac_p05": 0.1,
+   "frac_bh": 0.0,
+   "mean_gain": -0.21552778699900063
+  },
+  {
+   "delta": 6,
+   "frac_p05": 0.35,
+   "frac_bh": 0.18,
+   "mean_gain": 0.03748581630241777
+  },
+  {
+   "delta": 10,
+   "frac_p05": 0.64,
+   "frac_bh": 0.64,
+   "mean_gain": 0.5039360457799195
+  }
+ ],
+ "pseudo_raters": {
+  "n": 150,
+  "frac_sig_fdr05": 0.0,
+  "frac_p05": 0.08,
+  "gain_median": -0.33908734344215236
+ },
+ "runtime_s": 112
+}
