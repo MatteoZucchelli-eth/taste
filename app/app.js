@@ -23,6 +23,10 @@ const CFG = window.TASTE_CONFIG;
 /** Question n (0-based) is a random pair? */
 const isRandomQ = (n) => n < CFG.nRandom || (CFG.mixRandom && (n - CFG.nRandom) % 2 === 1);
 const $ = (id) => document.getElementById(id);
+/** Image URL: the local server mirrors the dataset paths; the Vercel build renames images to <index>.jpg. */
+/** Anonymous funnel event for Vercel Web Analytics (no-op locally; custom events show up on Vercel Pro and above). */
+const track = (name, data) => { try { window.va && window.va("event", { name, data }); } catch {} };
+const imgUrl = (i) => CFG.imgBase + (CFG.imgByIndex ? `${i}.jpg` : M.path[i]);
 
 // Pole names, read off the top/bottom images of each axis (fold-0 shared model; see outputs/phase_c/axes.html).
 const AXES = [
@@ -80,29 +84,53 @@ function priorBlocks() {
 }
 const PRIOR = { m: null, P: null };
 
-/** MAP of theta = [z, b] given answers [{top, bottom, y}] (y = 1 if top chosen). Returns {z, b, H}. */
+/** Negative log posterior of theta (up to a constant): logistic loss + Gaussian prior. */
+function objective(th, X, answers) {
+  const n = K + 1, { m, P } = PRIOR;
+  let v = 0;
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) v += 0.5 * (th[i] - m[i]) * P[i][j] * (th[j] - m[j]);
+  answers.forEach((a, r) => {
+    let l = 0; for (let i = 0; i < n; i++) l += X[r][i] * th[i];
+    v += Math.log1p(Math.exp(-Math.abs(l))) + Math.max(l, 0) - a.y * l; // log(1 + e^l) - y l, overflow-safe
+  });
+  return v;
+}
+
+/** MAP of theta = [z, b] given answers [{top, bottom, y}] (y = 1 if top chosen). Returns {z, b, H}.
+ * Newton with backtracking: a full Newton step can overshoot on logistic losses and never recover
+ * (seen in real sessions: objective stuck at 687 vs a true minimum of 12.8), so a step is halved until it lowers the objective. */
 function fit(answers) {
   const n = K + 1, { m, P } = PRIOR;
-  const th = m.slice();
-  let H;
-  for (let it = 0; it < 40; it++) {
+  const X = answers.map((a) => [...diff(a.top, a.bottom), 1]);
+  let th = m.slice();
+  let H, f0 = objective(th, X, answers);
+  for (let it = 0; it < 100; it++) {
     const g = new Array(n).fill(0);
     H = P.map((r) => r.slice());
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) g[i] += P[i][j] * (th[j] - m[j]);
-    for (const a of answers) {
-      const x = [...diff(a.top, a.bottom), 1];
+    answers.forEach((a, r) => {
+      const x = X[r];
       let l = 0; for (let i = 0; i < n; i++) l += x[i] * th[i];
       const p = sigmoid(l), w = p * (1 - p);
       for (let i = 0; i < n; i++) {
         g[i] += (p - a.y) * x[i];
         for (let j = 0; j < n; j++) H[i][j] += w * x[i] * x[j];
       }
-    }
+    });
     const step = solve(H, g);
+    let t = 1, next, f1;
+    for (; t > 1e-8; t /= 2) {
+      next = th.map((v, i) => v - t * step[i]);
+      f1 = objective(next, X, answers);
+      if (f1 <= f0) break;
+    }
+    if (!(f1 <= f0)) break; // no descent possible: already at the minimum (numerically)
     let mx = 0;
-    for (let i = 0; i < n; i++) { th[i] -= step[i]; mx = Math.max(mx, Math.abs(step[i])); }
+    for (let i = 0; i < n; i++) mx = Math.max(mx, Math.abs(t * step[i]));
+    th = next; f0 = f1;
     if (mx < 1e-9) break;
   }
+  // H above is the Hessian at the point before the last (tiny) step; fine for the Laplace posterior.
   return { z: th.slice(0, K), b: th[K], H };
 }
 
@@ -144,7 +172,7 @@ function preload(i) {
   if (preloaded.has(i)) return preloaded.get(i);
   const im = new Image();
   im.decoding = "async";
-  im.src = CFG.imgBase + M.path[i];
+  im.src = imgUrl(i);
   const p = im.decode().catch(() => {});
   preloaded.set(i, p);
   if (preloaded.size > 60) preloaded.delete(preloaded.keys().next().value);
@@ -169,7 +197,7 @@ async function showPair(pr) {
   $("next").hidden = true;
   const ids = [pr.top, pr.bottom];
   await Promise.all(ids.map(preload));
-  ids.forEach((i, k) => { slots[k].querySelector("img").src = CFG.imgBase + M.path[i]; });
+  ids.forEach((i, k) => { slots[k].querySelector("img").src = imgUrl(i); });
   await Promise.all(slots.map((s) => s.querySelector("img").decode().catch(() => {})));
   // both images appear together: neither gets a head start in looking time
   requestAnimationFrame(() => {
@@ -333,12 +361,13 @@ function tasteMatch(z1, z2) { // correlation of the personal part of the scores 
   const r = (sxy - (sx * sy) / n) / Math.sqrt((sxx - (sx * sx) / n) * (syy - (sy * sy) / n));
   return Math.round(50 * (1 + r));
 }
-function img(i) { const im = document.createElement("img"); im.src = CFG.imgBase + M.path[i]; im.alt = ""; im.loading = "lazy"; return im; }
+function img(i) { const im = document.createElement("img"); im.src = imgUrl(i); im.alt = ""; im.loading = "lazy"; return im; }
 
 function showResults() {
   const hits = S.tests.filter((t) => t.choice === t.pred).length;
   const crowd = S.tests.filter((t) => t.choice === t.cons).length;
   S.hits = hits;
+  track("Finished", { score: hits, crowd, challenge: !!S.challenge });
   $("r-score").textContent = hits;
   $("r-sub").textContent = `It learned your taste from ${CFG.nTrain} picks, then guessed ${hits} of your next ${CFG.nTest} before you chose.`;
   $("r-crowd").textContent = `A model of average taste would have guessed ${crowd}/${CFG.nTest}.`;
@@ -355,13 +384,19 @@ function showResults() {
     box.append(d);
   }
   S.picks = topBy((i) => S.sUser[i], 6, (i) => !S.used.has(i));
-  $("r-picks").replaceChildren(...S.picks.map(img));
+  $("r-picks").replaceChildren(...S.picks.map((i) => {
+    const b = document.createElement("button");
+    b.className = "pick"; b.setAttribute("aria-label", "Open this artwork");
+    b.append(img(i));
+    b.addEventListener("click", () => openArt(i));
+    return b;
+  }));
   if (S.challenge) {
     const m = tasteMatch(S.z, S.challenge.z);
     const who = S.challenge.n || "your friend";
     $("r-match").innerHTML = `You and <span></span>: <b>${m}%</b> taste match<br><span class="hint"></span>`;
     $("r-match").querySelector("span").textContent = who;
-    $("r-match").querySelector(".hint").textContent = `Their model guessed ${S.challenge.s}/10, yours ${hits}/10.`;
+    $("r-match").querySelector(".hint").textContent = `Their model guessed ${S.challenge.s}/${S.challenge.t}, yours ${hits}/${CFG.nTest}.`;
     $("r-match").hidden = false;
   }
   try { $("r-name").value = localStorage.getItem("taste_name") || ""; } catch {}
@@ -370,12 +405,52 @@ function showResults() {
   saveSession();
 }
 
+// ------------------------------------------------------------------ artwork viewer (suggested picks)
+/** Artist, title and year from the LAPIS (WikiArt-style) filename, e.g. "abstract/aaron-siskind_new-york-2-1948.jpg". */
+function credit(i) {
+  const stem = M.path[i].split("/").pop().replace(/\.[a-z]+$/i, "");
+  const [a, ...rest] = stem.split("_");
+  const cap = (t) => t.split("-").filter(Boolean).map((w) => w.replace(/(^|\.)([a-z])/g, (_, p, ch) => p + ch.toUpperCase())).join(" ");
+  let t = rest.join("_");
+  const m = t.match(/-(\d{4})$/);
+  const year = m ? m[1] : "";
+  if (m) t = t.slice(0, -5);
+  return { artist: cap(a), title: cap(t) || "Untitled", year, file: `${stem}.jpg` };
+}
+function openArt(i) {
+  const c = credit(i);
+  S.viewing = i;
+  $("art-img").src = imgUrl(i);
+  $("art-title").textContent = c.year ? `${c.title}, ${c.year}` : c.title;
+  $("art-artist").textContent = c.artist;
+  $("art-open").href = imgUrl(i);
+  $("art").hidden = false;
+  track("Open artwork");
+}
+async function saveArt() {
+  const i = S.viewing, c = credit(i);
+  track("Download artwork");
+  try {
+    const blob = await fetch(imgUrl(i)).then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); });
+    const file = new File([blob], c.file, { type: blob.type || "image/jpeg" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { // iPhone: share sheet with "Save Image"
+      try { await navigator.share({ files: [file] }); return; } catch (e) { if (e.name === "AbortError") return; }
+    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = c.file;
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  } catch {
+    window.open(imgUrl(i), "_blank"); // last resort: open it; long-press to save
+  }
+}
+
 // ------------------------------------------------------------------ share
 function b64url(s) { return btoa(unescape(encodeURIComponent(s))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
 function unb64url(s) { return decodeURIComponent(escape(atob(s.replace(/-/g, "+").replace(/_/g, "/")))); }
 function shareLink(name) {
   const z = S.z.map((v, k) => Math.round((1000 * (v - M.mu[k])) / Math.sqrt(M.Sig[k][k])));
-  const payload = b64url(JSON.stringify({ n: name, s: S.hits, z }));
+  const payload = b64url(JSON.stringify({ n: name, s: S.hits, t: CFG.nTest, z }));
   return `${location.origin}${location.pathname}#c=${payload}`;
 }
 function readChallenge() {
@@ -384,7 +459,8 @@ function readChallenge() {
   try {
     const o = JSON.parse(unb64url(m[1]));
     if (!Array.isArray(o.z) || o.z.length !== K) return null;
-    return { n: String(o.n || "").slice(0, 24), s: Math.max(0, Math.min(10, o.s | 0)),
+    const t = Math.max(1, Math.min(100, o.t | 0 || 10)); // older links have no t: they were out of 10
+    return { n: String(o.n || "").slice(0, 24), t, s: Math.max(0, Math.min(t, o.s | 0)),
              z: o.z.map((v, k) => M.mu[k] + (v / 1000) * Math.sqrt(M.Sig[k][k])) };
   } catch { return null; }
 }
@@ -393,7 +469,7 @@ function loadForCanvas(i) {
     const im = new Image();
     if (/^https?:/.test(CFG.imgBase)) im.crossOrigin = "anonymous"; // Blob store on another origin
     im.onload = () => res(im); im.onerror = () => res(null);
-    im.src = CFG.imgBase + M.path[i];
+    im.src = imgUrl(i);
   });
 }
 function wrap(ctx, text, x, y, maxW, lh) {
@@ -464,7 +540,7 @@ async function share() {
 function buildRec(partial) {
   const done = S.tests.filter((t) => t.choice !== undefined);
   return {
-    v: 2, id: S.id, partial, at: new Date().toISOString(), model: M.source, challengeFrom: S.challenge ? S.challenge.n : null,
+    v: 2, id: S.id, partial, at: new Date().toISOString(), model: M.source, fromChallenge: !!S.challenge,
     tag: CFG.tag, nTrain: CFG.nTrain, nTest: CFG.nTest, nRandom: CFG.nRandom, mixRandom: CFG.mixRandom,
     // q = question index; rnd = whether it was a random (not infogain) pair; paths join to data/lapis/images/
     train: S.answers.map((a, q) => ({ top: M.image_id[a.top], bottom: M.image_id[a.bottom], topPath: M.path[a.top],
@@ -489,9 +565,10 @@ function saveSession() {
     all.push(rec);
     localStorage.setItem("taste_sessions", JSON.stringify(all));
   } catch {}
-  // Local server (serve.py) writes the record to outputs/user_taste/. Later: a Vercel Function + database.
+  // Local server (serve.py) writes the record to outputs/user_taste/; on Vercel, api/session.js stores it in a private Blob store.
+  // The record is anonymous: random id, picks, timings and the fitted z; no name, IP or device info.
   fetch("api/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rec) })
-    .then((r) => { $("r-saved").textContent = r.ok ? "Saved on the server." : "Server did not save this session."; })
+    .then((r) => { $("r-saved").textContent = r.ok ? "Your picks were saved anonymously for research." : "Server did not save this session."; })
     .catch(() => { $("r-saved").textContent = "Server not reachable: session kept on this device only."; });
 }
 
@@ -508,9 +585,11 @@ async function boot() {
   ]);
   M = meta; U = new Float32Array(buf); K = M.k; N = M.n;
   Object.assign(PRIOR, priorBlocks());
+  document.querySelectorAll(".n-train").forEach((e) => { e.textContent = CFG.nTrain; });
+  document.querySelectorAll(".n-test").forEach((e) => { e.textContent = CFG.nTest; });
   newSession();
   if (S.challenge) {
-    $("challenge").textContent = `${S.challenge.n || "A friend"}'s taste model guessed ${S.challenge.s}/10. Can it read you?`;
+    $("challenge").textContent = `${S.challenge.n || "A friend"}'s taste model guessed ${S.challenge.s}/${S.challenge.t}. Can it read you?`;
     $("challenge").hidden = false;
   }
   const first = place(randomPair());
@@ -520,12 +599,16 @@ async function boot() {
 }
 
 slots.forEach((s, k) => s.addEventListener("click", () => onPick(k)));
-$("start").addEventListener("click", () => { showScreen("play"); trainStep(); });
-$("go-test").addEventListener("click", () => { showScreen("play"); testStep(); });
+$("start").addEventListener("click", () => { track("Start", { challenge: !!S.challenge }); showScreen("play"); trainStep(); });
+$("go-test").addEventListener("click", () => { track("Test start"); showScreen("play"); testStep(); });
 $("next").addEventListener("click", () => { if (S.tests.length >= CFG.nTest) showResults(); else testStep(); });
-$("share").addEventListener("click", share);
+$("share").addEventListener("click", () => { track("Share"); share(); });
 $("sheet-close").addEventListener("click", () => { $("sheet").hidden = true; });
+$("art-save").addEventListener("click", saveArt);
+$("art-close").addEventListener("click", () => { $("art").hidden = true; });
+$("art").addEventListener("click", (e) => { if (e.target === $("art")) $("art").hidden = true; });
 $("restart").addEventListener("click", () => {
+  track("Play again");
   newSession();
   const first = place(randomPair());
   S.ahead = { any: first };

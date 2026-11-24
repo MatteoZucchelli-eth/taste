@@ -7,9 +7,20 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#161616">
 <title>This or That</title>
-<meta name="description" content="Pick between 25 pairs of artworks. Then an AI tries to guess your next 10 picks before you make them.">
+<meta name="description" content="Pick between 50 pairs of artworks. Then an AI tries to guess your next 20 picks before you make them.">
 <meta property="og:title" content="Can an AI read your taste in art?">
-<meta property="og:description" content="25 picks to learn you. 10 picks to prove it.">
+<meta property="og:description" content="50 picks to learn you. 20 picks to prove it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://this-or-that-six.vercel.app/">
+<meta property="og:site_name" content="This or That">
+<meta property="og:image" content="https://this-or-that-six.vercel.app/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A Monet water-lily painting next to a Rothko colour field, with the question: Can an AI read your taste in art?">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Can an AI read your taste in art?">
+<meta name="twitter:description" content="50 picks to learn you. 20 picks to prove it.">
+<meta name="twitter:image" content="https://this-or-that-six.vercel.app/og.jpg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,8 +31,8 @@
     <h1>This or That</h1>
     <p class="lead">Tap the artwork you prefer.</p>
     <ol class="steps">
-      <li><b>25</b> picks to learn your taste</li>
-      <li><b>10</b> picks where the model guesses first</li>
+      <li><b class="n-train">50</b> picks to learn your taste</li>
+      <li><b class="n-test">20</b> picks where the model guesses first</li>
     </ol>
     <p class="hint">Go with your gut. There are no right answers.</p>
     <button id="start" class="btn" disabled>Loading…</button>
@@ -51,16 +62,16 @@
   <!-- between phases -->
   <section id="ready" class="screen center" hidden>
     <h1>Model ready</h1>
-    <p class="lead">It has learned your taste from 25 picks.</p>
+    <p class="lead">It has learned your taste from <span class="n-train">50</span> picks.</p>
     <p class="hint">Now it guesses each pick <b>before</b> you make it, then shows you its guess.</p>
-    <button id="go-test" class="btn">Test it · 10 picks</button>
+    <button id="go-test" class="btn">Test it · <span class="n-test">20</span> picks</button>
   </section>
 
   <!-- results -->
   <section id="results" class="screen scroll" hidden>
     <div class="res-head">
       <p class="eyebrow">The model predicted</p>
-      <p class="big"><span id="r-score">0</span><span class="of">/10</span></p>
+      <p class="big"><span id="r-score">0</span><span class="of">/<span class="n-test">20</span></span></p>
       <p id="r-sub" class="lead"></p>
       <p id="r-crowd" class="hint"></p>
       <p id="r-saved" class="hint"></p>
@@ -70,15 +81,27 @@
     <p id="r-label" class="label"></p>
     <div id="r-axes" class="axes"></div>
     <h2>Picked for you</h2>
-    <p class="hint">Artworks you haven't seen that the model thinks you'd like most.</p>
+    <p class="hint">Artworks you haven't seen that the model thinks you'd like most. Tap one to open or save it.</p>
     <div id="r-picks" class="grid"></div>
     <div class="share-box">
       <input id="r-name" class="name" type="text" maxlength="24" placeholder="Your name (shown to friends)" autocomplete="given-name">
       <button id="share" class="btn">Share my result</button>
       <button id="restart" class="btn ghost">Play again</button>
-      <p class="hint">Artworks from the LAPIS dataset (Maerten et al. 2025, CC BY-NC 4.0). Your picks stay on this device.</p>
+      <p class="hint">Artworks from the LAPIS dataset (Maerten et al. 2025, CC BY-NC 4.0). Your picks are saved anonymously for research: no name, no IP address, no device info. Visits are counted with cookieless Vercel Web Analytics.</p>
     </div>
   </section>
+
+  <!-- artwork viewer for the suggested picks -->
+  <div id="art" class="sheet" hidden>
+    <div class="sheet-inner">
+      <img id="art-img" alt="Suggested artwork">
+      <div class="art-credit"><b id="art-title"></b><span id="art-artist"></span></div>
+      <button id="art-save" class="btn">Save image</button>
+      <a id="art-open" class="btn ghost" target="_blank" rel="noopener">Open full size</a>
+      <p class="hint">From the LAPIS dataset (CC BY-NC 4.0): personal, non-commercial use. The artwork may be under the artist's copyright.</p>
+      <button id="art-close" class="btn small">Close</button>
+    </div>
+  </div>
 
   <!-- share fallback (no Web Share API, e.g. plain http on the LAN) -->
   <div id="sheet" class="sheet" hidden>
@@ -90,6 +113,8 @@
     </div>
   </div>
 </main>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>

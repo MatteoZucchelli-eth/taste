@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#161616">
+<title>This or That · designs</title>
+<link rel="stylesheet" href="style.css">
+<style>
+</style>
+</head>
+<body>
+<main id="app">
+  <section id="intro" class="screen center">
+    <h1>Which do you prefer?</h1>
+    <p class="lead">100 pairs of graphic designs (posts, posters, ads).</p>
+    <p class="hint">Tap the one you like more. Judge the design as a whole and go with your gut. The model's guesses were saved before you started.</p>
+    <button id="start" class="btn" disabled>Loading…</button>
+  </section>
+  <section id="play" class="screen" hidden>
+    <header class="bar"><span class="phase" id="phase">Designs</span><span id="count" class="count"></span></header>
+    <div class="progress"><div id="progress-fill"></div></div>
+    <div id="pair" class="pair">
+      <button class="slot" id="slot0" aria-label="Choose this image"><img alt=""></button>
+      <button class="slot" id="slot1" aria-label="Choose this image"><img alt=""></button>
+    </div>
+  </section>
+  <section id="done" class="screen center" hidden>
+    <h1>Thank you</h1>
+    <p id="saved" class="hint"></p>
+  </section>
+</main>
+<script src="design.js"></script>
+</body>
+</html>

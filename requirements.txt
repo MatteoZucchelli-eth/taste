@@ -10,3 +10,5 @@ diffusers==0.43.0
 transformers==5.24.0
 peft==0.22.0
 accelerate==1.16.0
+# design-transfer test (Crello parquet)
+pyarrow==26.0.1

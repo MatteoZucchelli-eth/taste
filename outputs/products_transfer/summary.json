@@ -1,0 +1,118 @@
+{
+ "domain": "products",
+ "session": "2026-11-24T02-19-52-104Z_bt4606",
+ "n": 100,
+ "predictions_sha256": "520364a0d03f9b572b1a00815f1214062f239d5b5c23c4b9a8e9bdc6be950517",
+ "median_rt_s": 2.7415,
+ "top_rate": 0.53,
+ "personal_clip": {
+  "acc": 0.63,
+  "ci95": [
+   0.5322034757513312,
+   0.7181778743049083
+  ],
+  "p_vs_chance": 0.006016487862681739
+ },
+ "crowd_clip": {
+  "acc": 0.54,
+  "ci95": [
+   0.44264685393523856,
+   0.6343935614666815
+  ],
+  "p_vs_chance": 0.24205920680364576
+ },
+ "personal_siglip": {
+  "acc": 0.6,
+  "ci95": [
+   0.5020007846184025,
+   0.6906002538863971
+  ],
+  "p_vs_chance": 0.028443966820490395
+ },
+ "consensus_siglip": {
+  "acc": 0.5,
+  "ci95": [
+   0.40382982859014716,
+   0.5961701714098528
+  ],
+  "p_vs_chance": 0.5397946186935894
+ },
+ "mcnemar_personal_vs_crowd": {
+  "personal_only": 21,
+  "crowd_only": 12,
+  "p_two_sided": 0.16275565745308995
+ },
+ "personal_clip_by_confidence": {
+  "low": {
+   "n": 34,
+   "acc": 0.47058823529411764
+  },
+  "mid": {
+   "n": 33,
+   "acc": 0.6363636363636364
+  },
+  "high": {
+   "n": 33,
+   "acc": 0.7878787878787878
+  }
+ },
+ "by_category": {
+  "chair": {
+   "personal_clip": 0.7,
+   "crowd_clip": 0.45,
+   "personal_siglip": 0.65,
+   "consensus_siglip": 0.3,
+   "n": 20
+  },
+  "lamp": {
+   "personal_clip": 0.55,
+   "crowd_clip": 0.6,
+   "personal_siglip": 0.55,
+   "consensus_siglip": 0.65,
+   "n": 20
+  },
+  "rug": {
+   "personal_clip": 0.5,
+   "crowd_clip": 0.5,
+   "personal_siglip": 0.5,
+   "consensus_siglip": 0.55,
+   "n": 20
+  },
+  "sofa": {
+   "personal_clip": 0.7,
+   "crowd_clip": 0.55,
+   "personal_siglip": 0.65,
+   "consensus_siglip": 0.3,
+   "n": 20
+  },
+  "table": {
+   "personal_clip": 0.7,
+   "crowd_clip": 0.6,
+   "personal_siglip": 0.65,
+   "consensus_siglip": 0.7,
+   "n": 20
+  }
+ },
+ "in_domain_cv": {
+  "a_frozen_lapis_z": {
+   "mean": 0.6332,
+   "sd_over_splits": 0.052628509384173135,
+   "n_test_per_split": 50
+  },
+  "b_refit_from_crowd_prior": {
+   "mean": 0.6164000000000001,
+   "sd_over_splits": 0.053656686442604705,
+   "n_test_per_split": 50
+  },
+  "c_refit_from_your_lapis_z": {
+   "mean": 0.643,
+   "sd_over_splits": 0.05527205442174191,
+   "n_test_per_split": 50
+  },
+  "d_clip_only": {
+   "mean": 0.695,
+   "sd_over_splits": 0.048487111689602624,
+   "n_test_per_split": 50
+  }
+ }
+}

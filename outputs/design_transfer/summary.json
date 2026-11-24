@@ -1,0 +1,68 @@
+{
+ "domain": "crello",
+ "session": "2026-11-24T01-25-55-484Z_uy6if7",
+ "n": 100,
+ "predictions_sha256": "1a1b2e774e71985095012e2175089cf043290aaaa0ccadd33a74f36f3aea52a0",
+ "median_rt_s": 2.343,
+ "top_rate": 0.42,
+ "personal_clip": {
+  "acc": 0.58,
+  "ci95": [
+   0.4820630799889527,
+   0.672017750814887
+  ],
+  "p_vs_chance": 0.06660530960360667
+ },
+ "crowd_clip": {
+  "acc": 0.48,
+  "ci95": [
+   0.38464384320080547,
+   0.5768359490982345
+  ],
+  "p_vs_chance": 0.691350293205374
+ },
+ "personal_siglip": {
+  "acc": 0.61,
+  "ci95": [
+   0.5120283616749817,
+   0.699832780680298
+  ],
+  "p_vs_chance": 0.017600100108852407
+ },
+ "consensus_siglip": {
+  "acc": 0.55,
+  "ci95": [
+   0.45244427031643447,
+   0.6438562489359654
+  ],
+  "p_vs_chance": 0.18410080866334813
+ },
+ "mcnemar_personal_vs_crowd": {
+  "personal_only": 20,
+  "crowd_only": 10,
+  "p_two_sided": 0.09873714670538902
+ },
+ "personal_clip_by_confidence": {
+  "low": {
+   "n": 34,
+   "acc": 0.5294117647058824
+  },
+  "mid": {
+   "n": 33,
+   "acc": 0.5757575757575758
+  },
+  "high": {
+   "n": 33,
+   "acc": 0.6363636363636364
+  }
+ },
+ "by_category": {
+  "all": {
+   "personal_clip": 0.58,
+   "crowd_clip": 0.48,
+   "personal_siglip": 0.61,
+   "consensus_siglip": 0.55,
+   "n": 100
+  }
+ }
+}

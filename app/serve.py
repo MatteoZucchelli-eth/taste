@@ -4,6 +4,9 @@ Serves app/ at / and the LAPIS images (data/lapis/images) at /img/. Standard lib
 POST /api/session stores a finished (or checkpointed) session as outputs/user_taste/<id>.json.
 Step 2 blind eval of generated images: /eval.html?n=120&tag=<name>; images under /gen/ (outputs/rl/final/img),
 POST /api/eval stores outputs/rl/human_eval/<id>.json.
+Design-transfer test (src/design_transfer.py): /design.html?tag=<name>; Crello images under /design/ (data/crello/img),
+POST /api/design stores outputs/design_transfer/answers/<id>.json.
+Products test: /design.html?set=products&tag=<name>; ABO images under /products/, POST /api/products.
 Long data-collection session (step 2 reward): http://localhost:8000/?train=100&test=20&mix=1&tag=<name>
 Usage: python3 app/serve.py [--port 8000]   then open http://<this machine's LAN IP>:8000 on the iPhone.
 """
@@ -20,6 +23,10 @@ IMAGES = ROOT.parent / "data/lapis/images"
 SESSIONS = ROOT.parent / "outputs/user_taste"
 GEN = ROOT.parent / "outputs/rl/final/img"
 EVALS = ROOT.parent / "outputs/rl/human_eval"
+DESIGNS = ROOT.parent / "data/crello/img"
+DESIGN_ANS = ROOT.parent / "outputs/design_transfer/answers"
+PRODUCTS = ROOT.parent / "data/abo/img"
+PRODUCT_ANS = ROOT.parent / "outputs/products_transfer/answers"
 MAX_BODY = 2_000_000
 
 
@@ -32,16 +39,23 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if clean.startswith("/gen/"):
             target = (GEN / clean[len("/gen/"):]).resolve()
             return str(target) if target.is_relative_to(GEN) else str(GEN / "__missing__")
+        if clean.startswith("/products/"):
+            target = (PRODUCTS / clean[len("/products/"):]).resolve()
+            return str(target) if target.is_relative_to(PRODUCTS) else str(PRODUCTS / "__missing__")
+        if clean.startswith("/design/"):
+            target = (DESIGNS / clean[len("/design/"):]).resolve()
+            return str(target) if target.is_relative_to(DESIGNS) else str(DESIGNS / "__missing__")
         return super().translate_path(path)
 
     def do_POST(self):
         route = self.path.split("?", 1)[0]
-        if route not in ("/api/session", "/api/eval"):
+        if route not in ("/api/session", "/api/eval", "/api/design", "/api/products"):
             return self.send_error(404)
         n = int(self.headers.get("Content-Length") or 0)
         if not 0 < n <= MAX_BODY:
             return self.send_error(413)
-        key, folder = ("train", SESSIONS) if route == "/api/session" else ("answers", EVALS)
+        key, folder = {"/api/session": ("train", SESSIONS), "/api/eval": ("answers", EVALS),
+                       "/api/design": ("answers", DESIGN_ANS), "/api/products": ("answers", PRODUCT_ANS)}[route]
         try:
             rec = json.loads(self.rfile.read(n))
             sid = re.sub(r"[^\w-]", "", str(rec.get("id") or ""))[:80]
@@ -57,7 +71,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
     def end_headers(self):
-        cache = "public, max-age=86400" if self.path.startswith("/img/") else "no-store"  # /gen/ changes between runs
+        cache = "public, max-age=86400" if self.path.startswith(("/img/", "/design/", "/products/")) else "no-store"  # /gen/ changes between runs
         self.send_header("Cache-Control", cache)
         super().end_headers()
 

@@ -1,0 +1,26 @@
+{
+ "source": "rl_final.py, 4 arms, 8 seeds",
+ "imgBase": "/gen/",
+ "arms": [
+  "base",
+  "bon16",
+  "diag_e06",
+  "diag_e24"
+ ],
+ "prompts": [
+  "a city street at night",
+  "a vase of flowers",
+  "a couple dancing",
+  "a figure reading in a room"
+ ],
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7
+ ]
+}

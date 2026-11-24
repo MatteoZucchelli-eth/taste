@@ -63,12 +63,25 @@ def main():
     ap.add_argument("--n", type=int, default=16)
     ap.add_argument("--runs", nargs="*", default=None)
     ap.add_argument("--skip-bon", action="store_true")
+    ap.add_argument("--arm", nargs="*", default=None, metavar="NAME=RUN/lora_eXXXX.pt",
+                    help="explicit LoRA arms (checkpoint under checkpoints/rl/runs/); replaces --runs")
+    ap.add_argument("--prompt-idx", type=int, nargs="*", default=None,
+                    help="evaluate on these TRAIN prompts (e.g. a diagnostic's training prompts, unseen seeds) instead of EVAL")
+    ap.add_argument("--seed-offset", type=int, default=900_000)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    runs = a.runs if a.runs is not None else sorted(p.name for p in Path("checkpoints/rl/runs").iterdir()
-                                                    if (p / "lora_final.pt").exists())
+    if a.arm:
+        arms = dict(x.split("=", 1) for x in a.arm)
+    else:
+        runs = a.runs if a.runs is not None else sorted(p.name for p in Path("checkpoints/rl/runs").iterdir()
+                                                        if (p / "lora_final.pt").exists())
+        arms = {r: f"{r}/lora_final.pt" for r in runs}
+    runs = list(arms)  # arm names
+    run_of = {k: v.split("/")[0] for k, v in arms.items()}
     sd = rl_sd.load_sd()
-    ev = Evaluator(seeds=a.seeds)
+    from rl_prompts import EVAL, TRAIN
+    prompts = [TRAIN[i] for i in a.prompt_idx] if a.prompt_idx else EVAL
+    ev = Evaluator(seeds=a.seeds, prompts=prompts, seed_offset=a.seed_offset)
     rows, summ = [], []
 
     def add(arm, imgs, kl=None, extra=None):
@@ -85,7 +98,7 @@ def main():
 
     args_of = {}
     for r in runs:
-        f = Path("outputs/rl/runs") / r / "args.json"
+        f = Path("outputs/rl/runs") / run_of[r] / "args.json"
         args_of[r] = json.loads(f.read_text())
     steps = {v["steps"] for v in args_of.values()} or {20}
     guid = {v["guidance"] for v in args_of.values()} or {5.0}
@@ -103,7 +116,7 @@ def main():
     rl_sd.add_lora(sd["unet"], args_of[runs[0]]["rank"] if runs else 4)
     for r in runs:
         assert args_of[r]["rank"] == args_of[runs[0]]["rank"]
-        st = torch.load(Path("checkpoints/rl/runs") / r / "lora_final.pt")
+        st = torch.load(Path("checkpoints/rl/runs") / arms[r])
         missing = sd["unet"].load_state_dict(st, strict=False)
         assert not missing.unexpected_keys and all("lora" not in k for k in missing.missing_keys)
         imgs, kl = ev.generate(sd, S, guidance, with_kl=True)
@@ -120,9 +133,8 @@ def main():
         s["win_r_user_vs_base"] = float((g["r_user"] > b.loc[g.index, "r_user"]).mean())
         s["win_siglip_user_vs_base"] = float((g["siglip_user"] > b.loc[g.index, "siglip_user"]).mean())
     # manifest for the app's blind eval mode (app/eval.html)
-    from rl_prompts import EVAL
     man = dict(source=f"rl_final.py, {len(summ)} arms, {a.seeds} seeds", imgBase="/gen/", arms=[s["arm"] for s in summ],
-               prompts=EVAL, seeds=sorted({s % 1000 for _, _, s in ev.jobs}))
+               prompts=prompts, seeds=sorted({s % 1000 for _, _, s in ev.jobs}))
     Path("app/data/eval_manifest.json").write_text(json.dumps(man, indent=1))
     S_ = pd.DataFrame(summ)
     S_.to_csv(OUT / "summary.csv", index=False)

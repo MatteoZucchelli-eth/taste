@@ -26,3 +26,19 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
 [  1861s] epoch=12 t=1861 r_mean=0.2345 r_sd=0.5712 r_within_sd=0.2439 kl_train=528.4 clipfrac=0.1719 ratio_dev=0.0002302 gnorm=0.003465 t_sample=45.85 t_epoch=133.4
 [  1916s] EVAL epoch=12.0000 r_user=0.3100 r_cons=0.7345 siglip_user=-0.1625 siglip_cons=0.9874 prompt_fit=0.1387 drift_sim=0.7371 diversity=0.4205 kl=437.2798
 [  2049s] epoch=13 t=2049 r_mean=0.2811 r_sd=0.5446 r_within_sd=0.2577 kl_train=488.3 clipfrac=0.1797 ratio_dev=0.0003031 gnorm=0.003392 t_sample=45.91 t_epoch=133.5
+[  2183s] epoch=14 t=2183 r_mean=0.286 r_sd=0.5614 r_within_sd=0.292 kl_train=324.3 clipfrac=0.1813 ratio_dev=0.0001087 gnorm=0.002958 t_sample=45.88 t_epoch=133.6
+[  2316s] epoch=15 t=2316 r_mean=0.2682 r_sd=0.5608 r_within_sd=0.2605 kl_train=307.2 clipfrac=0.1953 ratio_dev=0.000164 gnorm=0.002275 t_sample=45.86 t_epoch=133.5
+[  2370s] EVAL epoch=15.0000 r_user=0.3062 r_cons=0.7937 siglip_user=-0.1626 siglip_cons=0.9606 prompt_fit=0.1375 drift_sim=0.7247 diversity=0.4150 kl=422.9575
+[  2504s] epoch=16 t=2504 r_mean=0.2713 r_sd=0.5663 r_within_sd=0.2838 kl_train=386.9 clipfrac=0.1844 ratio_dev=0.000336 gnorm=0.002664 t_sample=45.9 t_epoch=133.5
+[  2637s] epoch=17 t=2637 r_mean=0.3137 r_sd=0.5413 r_within_sd=0.2813 kl_train=508.1 clipfrac=0.1766 ratio_dev=0.00018 gnorm=0.005251 t_sample=45.87 t_epoch=133.5
+[  2771s] epoch=18 t=2771 r_mean=0.3215 r_sd=0.5735 r_within_sd=0.2699 kl_train=430.2 clipfrac=0.2156 ratio_dev=0.0001558 gnorm=0.004383 t_sample=45.86 t_epoch=133.5
+[  2825s] EVAL epoch=18.0000 r_user=0.3426 r_cons=0.7843 siglip_user=-0.1625 siglip_cons=0.9906 prompt_fit=0.1368 drift_sim=0.7299 diversity=0.4118 kl=418.2729
+[  2959s] epoch=19 t=2959 r_mean=0.3791 r_sd=0.5822 r_within_sd=0.253 kl_train=416 clipfrac=0.1688 ratio_dev=0.0003583 gnorm=0.003216 t_sample=45.91 t_epoch=133.5
+[  3092s] epoch=20 t=3092 r_mean=0.3191 r_sd=0.5446 r_within_sd=0.2168 kl_train=450.1 clipfrac=0.1828 ratio_dev=0.0002714 gnorm=0.00287 t_sample=45.88 t_epoch=133.5
+[  3226s] epoch=21 t=3226 r_mean=0.3346 r_sd=0.5984 r_within_sd=0.2678 kl_train=524.1 clipfrac=0.1766 ratio_dev=0.0003856 gnorm=0.005376 t_sample=45.89 t_epoch=133.5
+[  3280s] EVAL epoch=21.0000 r_user=0.3322 r_cons=0.8005 siglip_user=-0.1667 siglip_cons=0.9859 prompt_fit=0.1386 drift_sim=0.7386 diversity=0.4088 kl=421.9378
+[  3414s] epoch=22 t=3414 r_mean=0.2943 r_sd=0.5975 r_within_sd=0.2777 kl_train=526.8 clipfrac=0.1875 ratio_dev=0.0002702 gnorm=0.003677 t_sample=45.89 t_epoch=133.5
+[  3547s] epoch=23 t=3547 r_mean=0.3182 r_sd=0.6119 r_within_sd=0.2831 kl_train=562.3 clipfrac=0.1828 ratio_dev=0.0003183 gnorm=0.003882 t_sample=45.88 t_epoch=133.5
+[  3681s] epoch=24 t=3681 r_mean=0.348 r_sd=0.6178 r_within_sd=0.262 kl_train=405.3 clipfrac=0.1609 ratio_dev=0.0001635 gnorm=0.002838 t_sample=45.87 t_epoch=133.5
+[  3735s] EVAL epoch=24.0000 r_user=0.3460 r_cons=0.8732 siglip_user=-0.1612 siglip_cons=1.0379 prompt_fit=0.1377 drift_sim=0.7243 diversity=0.3963 kl=432.8165
+
