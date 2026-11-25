@@ -1,6 +1,6 @@
 # Project context (handoff)
 
-Read this first, then `papers/INDEX.md`. Current work: **broadening beyond LAPIS (§7)**. Step 2 (RL, §6) is parked.
+Read this first, then `papers/INDEX.md`. Current work: **broadening beyond LAPIS to other visual datasets (§7)**. RL (§6) and text are parked.
 
 ## 1. Goal
 
@@ -60,7 +60,12 @@ stark B&W, raw gestural marks, baroque drama.
 ## 5. "This or That" web app (`app/`, export `src/app_export.py`)
 
 Phone-first static app: train picks (5 random, then infogain or `mix=1` alternating) fit a person's z (9 numbers) on the frozen Phase C model
-(fold 0, K=8, τ=0.5), then random test pairs whose model guess is locked before display. Shows score vs crowd model, top traits, share card,
+(fold 0, K=8, τ=0.5), then 20 test pairs whose model guess is locked before display: 5 most-sure, 5 "contrarian" (personal model
+sure, crowd model picks the other image), 10 random, at random positions (URL `sure`, `contra`). Chosen by simulation on 58 held-out
+LAPIS raters (`src/sure_test.py` → `outputs/sure_test/`): mean 16.5/20, beats the crowd model in 93% of sessions (random pairs:
+14.6/20, 61%). The app does not tell players that pairs are selected, and shows no per-pair confidence. Results compare the player
+with other people (per-trait and overall-unusualness percentiles vs `app/data/ref.json`: z fitted from 50 app-style picks for those
+58 raters, `src/app_reference.py`); the share card carries score, taste label, unusualness line and 3 picks. Shows score vs crowd model, top traits, share card,
 challenge link (`#c=`). Tap to choose, images stacked, sides random, per-person side-bias term in the fit, taps <450 ms ignored. All images allowed.
 - URL params: `train`, `test`, `mix=1`, `tag`. Sessions are POSTed to `/api/session` → `outputs/user_taste/`.
 - Local: `bash app/start.sh [port]` (wraps `app/serve.py`; prints LAN address).
@@ -86,14 +91,18 @@ personal 58% / crowd 48% (SigLIP personal 61%, p=0.02); products 63% / 54% (p=0.
 
 ## 7. Broadening beyond LAPIS (user decisions, 2026-11-24)
 
+**Text PARKED (user, 2026-11-24): visual only for now.** Unfinished: `src/phase_b_text.py` (LiteraryTaste, bge-large; the
+held-out-set consensus critic reached 0.626 vs 0.58 for the other 2 votes; personal critics never finished).
+
 Same taste mechanism over a broader space: images **and** English texts, later one taste vector over both. Each new dataset must first
 pass a Phase A replication.
+- **User (2026-11-24): real, human-made designs only, no AI-generated images** (PAMELA, TASTE, DesignPref are out as targets).
 - Image sets: **PAMELA** (`bethgelab/PAMELA`, CC BY 4.0, arXiv 2604.07427: 5,077 AI images with English prompts, 69.9k ratings,
   199 raters, ~15/image, 1–5 slider, `participant_id` + demographics), **DesignPref** (arXiv 2511.20513, 12k pairwise UI designs,
   20 pro designers; license unchecked), **TASTE** (arXiv 2605.20731, AI graphic design, 2×5 designers).
   Pick-a-Pic v2 dropped for now (no human consensus; users judge their own prompts); revisit only if PAMELA passes.
-- Text sets: **LiteraryTaste** (arXiv 2511.09310, 60 people × 100 pairs), **Jester** jokes, **PRISM**, poetry studies (Chaudhuri 2024
-  129×36 poems, OSF 9mw7r; brief-poetry EEG set 51×210). Still to verify: Jester/PRISM details, per-row data for the poetry sets.
+- Text sets: **LiteraryTaste** (arXiv 2511.09310, 60 people × 100 pairs), **PRISM**, poetry studies (Chaudhuri 2024
+  129×36 poems, OSF 9mw7r; brief-poetry EEG set 51×210). Still to verify: PRISM details, per-row data for the poetry sets.
 - Texts are items in their own right (pick between two texts), not prompts.
 - Everything becomes **within-rater pairs** (ties dropped).
 - Test features **as in Phase A** (metadata only). For text: **hand-built text stats** (length, readability, lexical diversity,

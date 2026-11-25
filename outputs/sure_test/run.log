@@ -1,0 +1,74 @@
+ Container taste-taste-run-0ace164a3e39 Creating 
+ Container taste-taste-run-0ace164a3e39 Created 
+rater 201 done
+rater 24 done
+rater 1411 done
+rater 1165 done
+rater 991 done
+rater 1303 done
+rater 687 done
+rater 1357 done
+rater 345 done
+rater 1456 done
+rater 1231 done
+rater 432 done
+rater 402 done
+rater 1690 done
+rater 6 done
+rater 606 done
+rater 585 done
+rater 339 done
+rater 102 done
+rater 120 done
+rater 250 done
+rater 309 done
+rater 312 done
+rater 327 done
+rater 330 done
+rater 444 done
+rater 492 done
+rater 516 done
+rater 537 done
+rater 543 done
+rater 609 done
+rater 615 done
+rater 654 done
+rater 759 done
+rater 774 done
+rater 801 done
+rater 861 done
+rater 870 done
+rater 882 done
+rater 943 done
+rater 988 done
+rater 1024 done
+rater 1030 done
+rater 1225 done
+rater 1375 done
+rater 1435 done
+rater 1498 done
+rater 1501 done
+rater 1522 done
+rater 1534 done
+rater 1558 done
+rater 1576 done
+rater 1600 done
+rater 1696 done
+rater 1705 done
+rater 1720 done
+rater 1837 done
+rater 1887 done
+
+Simulated score out of 20 (58 held-out LAPIS raters x 5 seeds)
+                me_mean  crowd_mean  acc_designed  crowd_acc_designed  acc_rand  p_ge15  p_le10  p_beats_crowd  mean_margin_vs_crowd
+design                                                                                                                             
+random          14.567      13.240           NaN                 NaN     0.728   0.500   0.038          0.610                 1.328
+sure10          16.781      15.281         0.970               0.902     0.708   0.890   0.003          0.597                 1.500
+contra5         15.343      10.436         0.894               0.106     0.725   0.655   0.021          0.921                 4.907
+contra10        15.983       8.038         0.874               0.126     0.724   0.731   0.010          0.959                 7.945
+sure5_contra5   16.503      11.697         0.929               0.515     0.721   0.848   0.007          0.931                 4.807
+
+Real app sessions (random test pairs): accuracy by model confidence
+   session  n_test   all  crowd_all  top_quarter  top_half  bottom_half
+0  m27khg      20  0.80       0.45          1.0       0.8          0.8
+1  t7893q      20  0.95       0.80          1.0       1.0          0.9

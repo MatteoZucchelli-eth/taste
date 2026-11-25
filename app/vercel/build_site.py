@@ -21,7 +21,7 @@ def main():
     (OUT / "img").mkdir(exist_ok=True)
     for f in ("index.html", "app.js", "style.css"):
         shutil.copy2(APP / f, OUT / f)
-    for f in ("meta.json", "U.bin"):
+    for f in ("meta.json", "U.bin", "ref.json"):
         shutil.copy2(APP / "data" / f, OUT / "data" / f)
     for f in ("config.js", "package.json", "vercel.json", "README.md", "og.jpg"):
         shutil.copy2(HERE / f, OUT / f)
