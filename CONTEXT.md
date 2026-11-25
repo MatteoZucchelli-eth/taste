@@ -64,8 +64,10 @@ Phone-first static app: train picks (5 random, then infogain or `mix=1` alternat
 sure, crowd model picks the other image), 10 random, at random positions (URL `sure`, `contra`). Chosen by simulation on 58 held-out
 LAPIS raters (`src/sure_test.py` → `outputs/sure_test/`): mean 16.5/20, beats the crowd model in 93% of sessions (random pairs:
 14.6/20, 61%). The app does not tell players that pairs are selected, and shows no per-pair confidence. Results compare the player
-with other people (per-trait and overall-unusualness percentiles vs `app/data/ref.json`: z fitted from 50 app-style picks for those
-58 raters, `src/app_reference.py`); the share card carries score, taste label, unusualness line and 3 picks. Shows score vs crowd model, top traits, share card,
+with other people (per-trait percentiles vs `app/data/ref.json`: z fitted from 50 app-style picks for those 58 raters,
+`src/app_reference.py`) and say how rare their mix is: "1 in N people share your mix of <top trait> and <2nd trait>" (Gaussian
+tail of both top traits on the ref crowd; ref range 1 in 11 to >1,000, median ~120; replaced the "more mainstream than X%" line on
+2026-11-25 so nobody is told they are average); the share card carries score, taste label, rarity line and 3 picks. Shows score vs crowd model, top traits, share card,
 challenge link (`#c=`). Tap to choose, images stacked, sides random, per-person side-bias term in the fit, taps <450 ms ignored. All images allowed.
 - URL params: `train`, `test`, `mix=1`, `tag`. Sessions are POSTed to `/api/session` → `outputs/user_taste/`.
 - Local: `bash app/start.sh [port]` (wraps `app/serve.py`; prints LAN address).
